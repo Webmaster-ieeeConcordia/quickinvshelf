@@ -1,5 +1,6 @@
 import type { User as DatabaseUser } from '@prisma/client';
-import { AuthError, isAuthApiError, type User, type Session } from "@supabase/supabase-js";
+import { AuthError, isAuthApiError} from "@supabase/supabase-js";
+import type { User as SupabaseUser, User, Session } from "@supabase/supabase-js";
 import type { AuthSession } from "server/session";
 import { config } from "~/config/shelf.config";
 import { db } from "~/database/db.server";
@@ -9,7 +10,6 @@ import type { ErrorLabel } from "~/utils/error";
 import { isLikeShelfError, ShelfError } from "~/utils/error";
 import { Logger } from "~/utils/logger";
 import { mapAuthSession } from "./mappers.server";
-import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 
 const label: ErrorLabel = "Auth";

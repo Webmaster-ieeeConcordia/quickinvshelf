@@ -4,9 +4,9 @@ import { useNavigate } from "@remix-run/react";
 import { createClient } from "@supabase/supabase-js";
 
 // Fixed the action function to be properly async and return something
-export const action: ActionFunction = async () => {
-  return null; // Add proper return since the function is async
-};
+export const action: ActionFunction = async () => 
+   null // Add proper return since the function is async
+;
 
 export default function AuthDiscord() {
   const navigate = useNavigate();
