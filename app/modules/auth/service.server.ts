@@ -1,14 +1,16 @@
-import { AuthError, isAuthApiError } from "@supabase/supabase-js";
+import type { User as DatabaseUser } from '@prisma/client';
+import { AuthError, isAuthApiError, type User, type Session } from "@supabase/supabase-js";
 import type { AuthSession } from "server/session";
 import { config } from "~/config/shelf.config";
 import { db } from "~/database/db.server";
 import { getSupabaseAdmin } from "~/integrations/supabase/client";
 import { SERVER_URL } from "~/utils/env";
-
 import type { ErrorLabel } from "~/utils/error";
 import { isLikeShelfError, ShelfError } from "~/utils/error";
 import { Logger } from "~/utils/logger";
 import { mapAuthSession } from "./mappers.server";
+import type { User as SupabaseUser } from '@supabase/supabase-js';
+
 
 const label: ErrorLabel = "Auth";
 
@@ -138,6 +140,8 @@ export async function signInWithEmail(email: string, password: string) {
   }
 }
 
+
+
 export async function signInWithSSO(domain: string) {
   try {
     const { data, error } = await getSupabaseAdmin().auth.signInWithSSO({
@@ -195,6 +199,17 @@ async function validateNonSSOUser(email: string) {
     });
   }
 }
+
+
+/**
+ * Retrieve the OAuth session after the Supabase OAuth flow completes.
+ * This is typically triggered by the /oauth/callback endpoint.
+ */
+
+
+
+
+
 
 export async function sendOTP(email: string) {
   try {
@@ -306,28 +321,271 @@ export async function deleteAuthAccount(userId: string) {
   }
 }
 
-export async function getAuthUserById(userId: string) {
+// service.server.ts
+
+/**
+ * Get auth user by Discord ID from user metadata
+ */
+export async function getAuthUserById(discordId: string) {
   try {
-    const { data, error } =
-      await getSupabaseAdmin().auth.admin.getUserById(userId);
+    const { data: { users }, error } = await getSupabaseAdmin().auth.admin.listUsers();
+    if (error) throw error;
 
-    if (error) {
-      throw error;
+    // Find user with matching Discord ID in metadata
+    const user = users.find(u => {
+      const metadata = u.user_metadata as { sub?: string };
+      return metadata?.sub === discordId;
+    });
+
+    if (!user) {
+      throw new ShelfError({
+        cause: null,
+        message: `User with Discord ID ${discordId} not found`,
+        label: "Auth",
+      });
     }
-
-    const { user } = data;
 
     return user;
   } catch (cause) {
     throw new ShelfError({
       cause,
-      message:
-        "Something went wrong while getting the auth user by id. Please try again later or contact support.",
-      additionalData: { userId },
-      label,
+      message: "Something went wrong while getting the auth user by Discord ID.",
+      additionalData: { discordId },
+      label: "Auth",
     });
   }
 }
+
+
+
+async function findOrCreateUser(authData: {
+  email: string;
+  discordId: string;
+  name?: string;
+  avatarUrl?: string;
+}) {
+  try {
+    // First try to find user by Discord ID or email in public User table
+    let user = await db.user.findFirst({
+      where: {
+        OR: [
+          { id: authData.discordId },
+          { email: authData.email.toLowerCase() }
+        ]
+      }
+    });
+
+    if (!user) {
+      // Create new user if not found
+      user = await db.user.create({
+        data: {
+          id: authData.discordId, // Use Discord ID as the primary user ID
+          email: authData.email.toLowerCase(),
+          username: `${authData.name || authData.email.split('@')[0]}`,
+          firstName: authData.name || authData.email.split('@')[0],
+          lastName: '',
+          onboarded: true,
+          tierId: "tier_2",
+          sso: true,
+          createdWithInvite: false,
+          discordId: authData.discordId,
+          discordUsername: authData.name
+        }
+      });
+    } else {
+      // Update existing user with latest Discord info
+      user = await db.user.update({
+        where: { id: user.id },
+        data: {
+          discordId: authData.discordId,
+          discordUsername: authData.name,
+          // Only update these if they were empty before
+          firstName: user.firstName || authData.name || authData.email.split('@')[0],
+          username: user.username || `${authData.name || authData.email.split('@')[0]}`
+        }
+      });
+    }
+
+    return user;
+  } catch (error) {
+    throw new ShelfError({
+      cause: error,
+      message: "Failed to find or create user",
+      label: "Auth",
+      additionalData: { email: authData.email, discordId: authData.discordId }
+    });
+  }
+}
+
+
+
+// Helper function to convert DatabaseUser to SupabaseUser format
+function convertToSupabaseUser(dbUser: DatabaseUser, userData: SupabaseUser): SupabaseUser {
+  return {
+    id: dbUser.id,
+    email: dbUser.email,
+    created_at: dbUser.createdAt?.toISOString(),
+    updated_at: dbUser.updatedAt?.toISOString(),
+    app_metadata: userData.app_metadata,
+    user_metadata: {
+      ...userData.user_metadata,
+      discord_id: dbUser.discordId,
+      name: dbUser.firstName,
+      avatar_url: dbUser.avatar || dbUser.profilePicture
+    },
+    aud: userData.aud,
+    role: userData.role,
+    email_confirmed_at: userData.email_confirmed_at,
+    phone: userData.phone,
+    confirmed_at: userData.confirmed_at,
+    last_sign_in_at: userData.last_sign_in_at,
+    factors: userData.factors,
+  };
+}
+
+export async function getOAuthSession(data: {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  expires_at?: number;
+}): Promise<AuthSession & { user: User; user_metadata: Record<string, any> }> {
+  try {
+    const { data: userData, error: userError } = await getSupabaseAdmin().auth.getUser(data.access_token);
+
+    if (userError) {
+      Logger.error({
+        cause: userError,
+        message: "Failed to get user data from access token",
+        label: "Auth",
+        additionalData: { token: data.access_token }
+      });
+      throw userError;
+    }
+
+    if (!userData?.user) {
+      throw new ShelfError({
+        cause: null,
+        message: "User data not found in OAuth response",
+        label: "Auth",
+      });
+    }
+
+    const discordId = userData.user.user_metadata?.sub;
+    if (!discordId) {
+      Logger.error({
+        message: "Discord ID missing from metadata",
+        label: "Auth",
+        additionalData: { metadata: userData.user.user_metadata }
+      });
+      throw new ShelfError({
+        cause: null,
+        message: "Discord ID is missing in user metadata",
+        label: "Auth",
+      });
+    }
+
+    // Try to find existing user by Discord ID
+    let existingUser;
+    try {
+      existingUser = await getAuthUserById(discordId);
+      Logger.info({
+        message: "Found existing user by Discord ID",
+        label: "Auth",
+        additionalData: { discordId, userId: existingUser.id }
+      });
+    } catch (error) {
+      Logger.info({
+        message: "No existing user found for Discord ID",
+        label: "Auth",
+        additionalData: { discordId }
+      });
+    }
+
+    const email = userData.user.email;
+    if (!email) {
+      throw new ShelfError({
+        cause: null,
+        message: "User email is missing in Supabase response",
+        label: "Auth",
+      });
+    }
+
+    const userId = existingUser?.id || userData.user.id;
+
+    // Ensure user exists in auth.users table
+    const { error: upsertError } = await getSupabaseAdmin().auth.admin.updateUserById(
+      userId,
+      {
+        user_metadata: {
+          ...userData.user.user_metadata,
+          discord_id: discordId,
+          name: userData.user.user_metadata.full_name || userData.user.user_metadata.name,
+          avatar_url: userData.user.user_metadata.avatar_url
+        },
+        email_confirm: true
+      }
+    );
+
+    if (upsertError) {
+      Logger.error({
+        cause: upsertError,
+        message: "Failed to update user data",
+        label: "Auth",
+        additionalData: { userId }
+      });
+      throw upsertError;
+    }
+
+    // Handle refresh token
+    try {
+      await db.$queryRawUnsafe(
+        `INSERT INTO auth.refresh_tokens (token, user_id, revoked, created_at, updated_at)
+        VALUES ($1, $2, FALSE, NOW(), NOW())
+        ON CONFLICT (token) DO UPDATE SET updated_at = NOW(), revoked = FALSE;`,
+        data.refresh_token, 
+        userId
+      );
+    } catch (error) {
+      Logger.error({
+        cause: error,
+        message: "Failed to persist refresh token",
+        label: "Auth",
+        additionalData: { userId }
+      });
+      throw error;
+    }
+
+    const session: AuthSession & { user: User; user_metadata: Record<string, any> } = {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      expiresIn: data.expires_in,
+      expiresAt: data.expires_at || Date.now() + data.expires_in * 1000,
+      user: existingUser || userData.user,
+      user_metadata: {
+        ...userData.user.user_metadata,
+        discord_id: discordId
+      },
+      userId: userId,
+      email
+    };
+
+    return session;
+  } catch (cause) {
+    Logger.error({
+      cause,
+      message: "Failed to process OAuth session",
+      label: "Auth",
+      additionalData: { expires_in: data.expires_in }
+    });
+    throw new ShelfError({
+      cause,
+      message: "Failed to retrieve OAuth session",
+      label: "Auth",
+    });
+  }
+}
+
+
 
 export async function getAuthResponseByAccessToken(accessToken: string) {
   try {
@@ -345,12 +603,12 @@ export async function getAuthResponseByAccessToken(accessToken: string) {
 export async function validateSession(token: string) {
   try {
     const t0 = performance.now();
-    const result = await db.$queryRaw<{ id: String; revoked: boolean }[]>`
-      SELECT id, revoked FROM auth.refresh_tokens 
+    const result = await db.$queryRaw<{ id: String; revoked: boolean }[]>
+    `SELECT id, revoked FROM auth.refresh_tokens 
       WHERE token = ${token} 
       AND revoked = false
-      LIMIT 1 
-    `;
+      LIMIT 1 `
+    ;
     const t1 = performance.now();
 
     // eslint-disable-next-line no-console

@@ -50,6 +50,8 @@ import { resolveTeamMemberName } from "~/utils/user";
 import { freezeColumnClassNames } from "./freeze-column-classes";
 import { AssetImage } from "../asset-image";
 import { AssetStatusBadge } from "../asset-status-badge";
+import { QrPreviewDialog } from "../qr-preview-dialog";
+import AssetQuickActions from "./asset-quick-actions";
 
 export function AdvancedIndexColumn({
   column,
@@ -157,8 +159,19 @@ export function AdvancedIndexColumn({
       );
 
     case "id":
-    case "qrId":
       return <TextColumn value={item[column]} />;
+
+    case "qrId":
+      return (
+        <QrPreviewDialog
+          asset={item}
+          trigger={
+            <Td className="w-full max-w-none !overflow-visible whitespace-nowrap">
+              <Button variant="link-gray">{item.qrId}</Button>
+            </Td>
+          }
+        />
+      );
 
     case "status":
       return <StatusColumn status={item.status} />;
@@ -189,13 +202,14 @@ export function AdvancedIndexColumn({
         <TextColumn
           value={
             item?.location?.name ? (
-              <Link
+              <Button
                 to={`/locations/${item.locationId}`}
-                className="block max-w-[220px] truncate font-medium underline hover:text-gray-600"
                 title={item.location.name}
+                target="_blank"
+                variant="link-gray"
               >
                 {item.location.name}
-              </Link>
+              </Button>
             ) : (
               ""
             )
@@ -227,6 +241,21 @@ export function AdvancedIndexColumn({
 
     case "availableToBook":
       return <TextColumn value={item.availableToBook ? "Yes" : "No"} />;
+
+    case "upcomingReminder":
+      return (
+        <UpcomingReminderColumn
+          assetId={item.id}
+          upcomingReminder={item.upcomingReminder}
+        />
+      );
+
+    case "actions":
+      return (
+        <Td>
+          <AssetQuickActions asset={item} />
+        </Td>
+      );
   }
 }
 
@@ -388,4 +417,33 @@ function CustodyColumn({
 
 function Td({ className, ...rest }: React.ComponentProps<typeof BaseTd>) {
   return <BaseTd className={tw("p-[2px]", className)} {...rest} />;
+}
+
+function UpcomingReminderColumn({
+  assetId,
+  upcomingReminder,
+}: {
+  assetId: string;
+  upcomingReminder: AdvancedIndexAsset["upcomingReminder"];
+}) {
+  if (!upcomingReminder) {
+    return <Td>No upcoming reminder</Td>;
+  }
+
+  return (
+    <Td>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="link-gray" to={`/assets/${assetId}/reminders`}>
+            {upcomingReminder.displayDate}
+          </Button>
+        </TooltipTrigger>
+
+        <TooltipContent className="max-w-[400px]">
+          <p className="mb-1 font-bold">{upcomingReminder.name}</p>
+          <p>{upcomingReminder.message.substring(0, 1000)}</p>
+        </TooltipContent>
+      </Tooltip>
+    </Td>
+  );
 }

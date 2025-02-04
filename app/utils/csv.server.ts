@@ -359,6 +359,13 @@ export const buildCsvExportDataFromAssets = ({
           case "availableToBook":
             value = asset.availableToBook ? "Yes" : "No";
             break;
+          case "upcomingReminder": {
+            value = asset.upcomingReminder?.displayDate;
+            break;
+          }
+          case "actions":
+            value = "";
+            break;
           default:
             checkExhaustiveSwitch(fieldName);
             value = "";

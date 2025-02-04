@@ -61,6 +61,7 @@ export type FailureReason = {
     | "Healthcheck"
     | "Image"
     | "Invite"
+    | "OAuthCallback"
     | "User onboarding"
     | "Location"
     | "Notification"

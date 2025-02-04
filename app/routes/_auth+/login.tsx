@@ -1,14 +1,14 @@
+import { json, redirect } from "@remix-run/node";
 import type {
   ActionFunctionArgs,
   LoaderFunctionArgs,
   MetaFunction,
-} from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { useActionData, useLoaderData, useNavigation } from "@remix-run/react";
+ LoaderFunction } from "@remix-run/node";
+import { useActionData, useLoaderData, useNavigation , Form as RemixForm , Form } from "@remix-run/react";
 
 import { useZorm } from "react-zorm";
 import { z } from "zod";
-import { Form } from "~/components/custom-form";
+
 
 import Input from "~/components/forms/input";
 import PasswordInput from "~/components/forms/password-input";
@@ -17,6 +17,8 @@ import { config } from "~/config/shelf.config";
 import { useSearchParams } from "~/hooks/search-params";
 import { ContinueWithEmailForm } from "~/modules/auth/components/continue-with-email-form";
 import { signInWithEmail } from "~/modules/auth/service.server";
+ 
+
 
 import {
   getSelectedOrganisation,
@@ -24,12 +26,7 @@ import {
 } from "~/modules/organization/context.server";
 import { appendToMetaTitle } from "~/utils/append-to-meta-title";
 import { setCookie } from "~/utils/cookies.server";
-import {
-  isLikeShelfError,
-  isZodValidationError,
-  makeShelfError,
-  notAllowedMethod,
-} from "~/utils/error";
+import { makeShelfError, notAllowedMethod } from "~/utils/error";
 import { isFormProcessing } from "~/utils/form";
 import {
   data,
@@ -40,17 +37,34 @@ import {
 } from "~/utils/http.server";
 import { validEmail } from "~/utils/misc";
 
-export function loader({ context }: LoaderFunctionArgs) {
-  const title = "Log in";
-  const subHeading = "Welcome back! Enter your details below to log in.";
-  const { disableSignup, disableSSO } = config;
 
+export const loader: LoaderFunction = async ({ request, context }) => {
+  const url = new URL(request.url);
+  const redirectTo = url.searchParams.get("redirectTo");
+
+  // Prevent redirect loops
+  if (redirectTo === "/auth/discord" && url.pathname === "/auth/discord") {
+    return null; // Do nothing; avoid infinite loop
+  }
+
+  // If the user is authenticated, redirect to the assets page
   if (context.isAuthenticated) {
     return redirect("/assets");
   }
 
-  return json(data({ title, subHeading, disableSignup, disableSSO }));
-}
+  // Provide default data for rendering the page
+  const title = "Log in";
+  const subHeading = "Welcome back! Enter your details below to log in.";
+
+  return json({
+    title,
+    subHeading,
+    disableSignup: config.disableSignup,
+    disableSSO: config.disableSSO,
+  });
+};
+
+
 
 const LoginFormSchema = z.object({
   email: z
@@ -104,13 +118,7 @@ export async function action({ context, request }: ActionFunctionArgs) {
 
     throw notAllowedMethod(method);
   } catch (cause) {
-    const reason = makeShelfError(
-      cause,
-      undefined,
-      isLikeShelfError(cause)
-        ? cause.shouldBeCaptured
-        : !isZodValidationError(cause)
-    );
+    const reason = makeShelfError(cause);
     return json(error(reason), { status: reason.status });
   }
 }
@@ -119,115 +127,35 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
   { title: data ? appendToMetaTitle(data.title) : "" },
 ];
 
-export default function IndexLoginForm() {
-  const { disableSignup, disableSSO } = useLoaderData<typeof loader>();
-  const zo = useZorm("NewQuestionWizardScreen", LoginFormSchema);
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? undefined;
-  const acceptedInvite = searchParams.get("acceptedInvite");
-  const data = useActionData<typeof action>();
 
+export default function IndexLoginForm() {
+  const { title, subHeading } = useLoaderData<{
+    title: string;
+    subHeading: string;
+  }>();
   const navigation = useNavigation();
-  const disabled = isFormProcessing(navigation.state);
+  const isLoading = navigation.state === "submitting";
 
   return (
     <div className="w-full max-w-md">
-      {acceptedInvite ? (
-        <div className="mb-8 text-center text-success-600">
-          Successfully accepted workspace invite. Please login to see your new
-          workspace.
-        </div>
-      ) : null}
-      <Form ref={zo.ref} method="post" replace className="flex flex-col gap-5">
-        <div>
-          <Input
-            data-test-id="email"
-            label="Email address"
-            placeholder="zaans@huisje.com"
-            required
-            autoFocus={true}
-            name={zo.fields.email()}
-            type="email"
-            autoComplete="email"
-            disabled={disabled}
-            inputClassName="w-full"
-            error={zo.errors.email()?.message || data?.error.message}
-          />
-        </div>
-        <PasswordInput
-          label="Password"
-          placeholder="**********"
-          data-test-id="password"
-          name={zo.fields.password()}
-          autoComplete="new-password"
-          disabled={disabled}
-          inputClassName="w-full"
-          error={zo.errors.password()?.message || data?.error.message}
-        />
-        <input type="hidden" name={zo.fields.redirectTo()} value={redirectTo} />
-        <Button
-          className="text-center"
-          type="submit"
-          data-test-id="login"
-          disabled={disabled}
-        >
-          Log In
-        </Button>
-        <div className="flex flex-col items-center justify-center">
-          <div className="text-center text-sm text-gray-500">
-            Don't remember your password?{" "}
-            <Button
-              variant="link"
-              to={{
-                pathname: "/forgot-password",
-                search: searchParams.toString(),
-              }}
-            >
-              Reset password
-            </Button>
-          </div>
-        </div>
-      </Form>
-      {!disableSSO && (
-        <div className="mt-6 text-center">
-          <Button variant="link" to="/sso-login">
-            Login with SSO
-          </Button>
-        </div>
-      )}
-
+      <h1 className="text-center text-2xl font-bold">{title}</h1>
+      <p className="text-center text-gray-600">{subHeading}</p>
       <div className="mt-6">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-2 text-gray-500">
-              Or use a{" "}
-              <strong title="One Time Password (OTP) is the most secure way to login. We will send you a code to your email.">
-                One Time Password
-              </strong>
-            </span>
-          </div>
-        </div>
-        <div className="mt-6">
-          <ContinueWithEmailForm mode="login" />
-        </div>
-        {disableSignup ? null : (
-          <div className="mt-6 text-center text-sm text-gray-500">
-            Don't have an account?{" "}
-            <Button
-              variant="link"
-              data-test-id="signupButton"
-              to={{
-                pathname: "/join",
-                search: searchParams.toString(),
-              }}
-            >
-              Sign up
-            </Button>
-          </div>
-        )}
+        <Form action="/auth/discord" method="post">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          >
+            <svg className="size-5" viewBox="0 0 71 55" fill="none">
+              <path
+                d="M60.1 4.9C55.6 2.8 50.7 1.3 45.7 0.4C20.3 1.3 15.4 2.8 10.9 4.9C1.6 18.7 0 32.1 0.3 45.4C6.5 50 12.3 52.7 18.1 54.5C58.6 52.7 64.5 50 70.6 45.6C72.2 30.1 68.2 16.8 60.2 5.0Z"
+                fill="#5865F2"
+              />
+            </svg>
+            {isLoading ? "Connecting..." : "Continue with Discord"}
+          </button>
+        </Form>
       </div>
     </div>
   );

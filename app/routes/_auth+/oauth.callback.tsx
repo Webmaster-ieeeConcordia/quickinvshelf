@@ -1,206 +1,198 @@
-import { useEffect, useMemo } from "react";
-
+import { useEffect, useState } from "react";
+import { OrganizationType } from "@prisma/client";
+import type { User } from "@prisma/client";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
-import { z } from "zod";
-import { Button } from "~/components/shared/button";
-import { Spinner } from "~/components/shared/spinner";
-import { config } from "~/config/shelf.config";
-import { useSearchParams } from "~/hooks/search-params";
-import { supabaseClient } from "~/integrations/supabase/client";
-import { refreshAccessToken } from "~/modules/auth/service.server";
+import { db } from "~/database/db.server"; // Ensure db is correctly imported for manual database updates
+import { getOAuthSession } from "~/modules/auth/service.server";
 import { setSelectedOrganizationIdCookie } from "~/modules/organization/context.server";
+import { getOrganizationByUserId, createOrganization } from "~/modules/organization/service.server";
+import { createUser, findUserByEmail, getUserByID } from "~/modules/user/service.server";
 import { setCookie } from "~/utils/cookies.server";
-import { makeShelfError, notAllowedMethod, ShelfError } from "~/utils/error";
-import {
-  data,
-  error,
-  getActionMethod,
-  parseData,
-  safeRedirect,
-} from "~/utils/http.server";
-import { resolveUserAndOrgForSsoCallback } from "~/utils/sso.server";
+import { ShelfError } from "~/utils/error";
+import { Logger } from "~/utils/logger";
+import { randomUsernameFromEmail } from "~/utils/user";
 
-/**
- * Schema for handling OAuth callback data with improved groups handling
- * Ensures groups are always an array or empty array, regardless of input format
- */
-const CallbackSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  // Transform groups to either parse JSON string array or return empty array
-  groups: z
-    .union([
-      z.string().transform((str) => {
-        try {
-          const parsed = JSON.parse(str);
-          return Array.isArray(parsed) ? parsed : [];
-        } catch {
-          return [];
-        }
-      }),
-      z.array(z.string()),
-    ])
-    .default([]),
-  refreshToken: z.string().min(1),
-  redirectTo: z.string().optional(),
-});
+type OAuthCallbackResponse = {
+  redirectTo?: string;
+  error?: { message: string };
+};
 
-export async function action({ request, context }: ActionFunctionArgs) {
-  const { disableSSO } = config;
-  try {
-    /**
-     * Currently the only reason to use oauth/callback is for SSO reasons.
-     * Once we start adding social login providers, this will need to be adjusted
-     */
-    if (disableSSO) {
-      throw new ShelfError({
-        cause: null,
-        title: "SSO is disabled",
-        message:
-          "For more information, please contact your workspace administrator.",
-        label: "User onboarding",
-        status: 403,
-        shouldBeCaptured: false,
-      });
-    }
-
-    const method = getActionMethod(request);
-
-    switch (method) {
-      case "POST": {
-        const { refreshToken, redirectTo, firstName, lastName, groups } =
-          parseData(await request.formData(), CallbackSchema);
-
-        // We should not trust what is sent from the client
-        // https://github.com/rphlmr/supa-fly-stack/issues/45
-        const authSession = await refreshAccessToken(refreshToken);
-
-        /**
-         * This resolves the correct org we should redirect the user to
-         * Also it handles:
-         * - Creating a new user if the user doesn't exist
-         * - Throwing an error if the user is already connected to an email account
-         * - Linking the user to the correct org if SCIM is configured
-         */
-        const { org } = await resolveUserAndOrgForSsoCallback({
-          authSession,
-          firstName,
-          lastName,
-          groups,
-        });
-
-        // Set the auth session and redirect to the assets page
-        context.setSession(authSession);
-
-        // If org exists (SCIM SSO case), redirect to that org
-        // Otherwise (Pure SSO case), redirect to personal workspace
-        return redirect(
-          safeRedirect(redirectTo || "/assets"),
-          org?.id
-            ? {
-                headers: [
-                  setCookie(await setSelectedOrganizationIdCookie(org?.id)),
-                ],
-              }
-            : {}
-        );
-      }
-    }
-
-    throw notAllowedMethod(method);
-  } catch (cause) {
-    const reason = makeShelfError(cause);
-    return json(error(reason), { status: reason.status });
-  }
-}
-
-export function loader({ context }: LoaderFunctionArgs) {
-  const title = "Signing in via SSO";
-  const subHeading = "Please wait while we connect your account";
-
+export const loader: LoaderFunction = async ({ context }) => {
   if (context.isAuthenticated) {
     return redirect("/assets");
   }
+  return null;
+};
 
-  return json(data({ title, subHeading }));
-}
-export default function LoginCallback() {
-  const fetcher = useFetcher<typeof action>();
-  const { data } = fetcher;
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? "/assets";
+// oauth callback action
+export const action: ActionFunction = async ({ request, context }) => {
+  try {
+    const body = await request.formData();
+    const access_token = body.get("access_token")?.toString();
+    const refresh_token = body.get("refresh_token")?.toString();
+    const expires_in = parseInt(body.get("expires_in")?.toString() || "0", 10);
+    const expires_at = body.get("expires_at")?.toString();
 
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabaseClient.auth.onAuthStateChange((event, supabaseSession) => {
-      if (event === "SIGNED_IN") {
-        // supabase sdk has ability to read url fragment that contains your token after third party provider redirects you here
-        // this fragment url looks like https://.....#access_token=evxxxxxxxx&refresh_token=xxxxxx, and it's not readable server-side (Oauth security)
-        // supabase auth listener gives us a user session, based on what it founds in this fragment url
-        // we can't use it directly, client-side, because we can't access sessionStorage from here
+    if (!access_token || !refresh_token || isNaN(expires_in)) {
+      throw new ShelfError({
+        cause: new Error("Missing or invalid OAuth parameters."),
+        message: "Invalid OAuth response",
+        label: "OAuthCallback",
+        status: 400,
+      });
+    }
 
-        // we should not trust what's happen client side
-        // so, we only pick the refresh token, and let's back-end getting user session from it
-        const refreshToken = supabaseSession?.refresh_token;
-        const user = supabaseSession?.user;
-
-        if (!refreshToken) return;
-
-        const formData = new FormData();
-
-        formData.append("refreshToken", refreshToken);
-        formData.append("redirectTo", redirectTo);
-        formData.append(
-          "firstName",
-          user?.user_metadata?.custom_claims.firstName || ""
-        );
-        formData.append(
-          "lastName",
-          user?.user_metadata?.custom_claims.lastName || ""
-        );
-
-        const groups = user?.user_metadata?.custom_claims.groups;
-        formData.append("groups", JSON.stringify(groups || []));
-
-        fetcher.submit(formData, { method: "post" });
-      }
+    const authSession = await getOAuthSession({
+      access_token,
+      refresh_token,
+      expires_in,
+      expires_at: expires_at ? parseInt(expires_at, 10) : undefined,
     });
 
-    return () => {
-      // prevent memory leak. Listener stays alive 👨‍🎤
-      subscription.unsubscribe();
-    };
-  }, [fetcher, redirectTo]);
+    if (!authSession.user?.email || !authSession.user?.user_metadata?.sub) {
+      throw new ShelfError({
+        cause: new Error("Missing user data in auth session"),
+        message: "Unable to retrieve user information",
+        label: "OAuthCallback",
+        status: 400,
+      });
+    }
 
-  const validationErrors = useMemo(
-    () => data?.error?.additionalData?.validationErrors,
-    [data?.error]
-  );
+    const discordUserId = authSession.user.user_metadata.sub;
+    console.log(discordUserId);
+
+    let user = await findUserByEmail(authSession.user.email);
+
+    if (!user) {
+      user = await createUser({
+        userId: discordUserId,
+        email: authSession.user.email,
+        username: randomUsernameFromEmail(authSession.user.email),
+        firstName: authSession.user_metadata.global_name || authSession.user_metadata.name || authSession.user.email.split('@')[0],
+        lastName: null,
+        isSSO: true,
+        createdWithInvite: false,
+      });
+
+      // Set the user's tier to tier_2 in the database
+      await db.user.update({
+        where: { id: user.id },
+        data: { tierId: "tier_2" }, // Replace "tier_2" with the actual ID for tier_2 in your database
+      });
+    }
+
+    // Set session
+    await context.setSession({
+      accessToken: access_token,
+      refreshToken: refresh_token, // refreshtoken
+      expiresIn: expires_in,
+      expiresAt: expires_at ? parseInt(expires_at, 10) : Date.now() + expires_in * 1000,
+      userId: discordUserId,
+      email: authSession.user.email,
+    });
+
+    // Get or create organization
+    let organization;
+    try {
+      organization = await getOrganizationByUserId({
+        userId: discordUserId,  
+        orgType: OrganizationType.TEAM, // Changed from PERSONAL to TEAM to match createOrganization
+      });
+    } catch (error) {
+      // If organization not found, create it
+      organization = await createOrganization({
+        name: `${user.firstName || authSession.user.email.split("@")[0]}'s Workspace`,
+        userId: discordUserId, // Using Discord ID directly
+        currency: "USD",
+        image: null,
+      });
+    }
+
+    // Set organization cookie
+    const organizationCookie = await setSelectedOrganizationIdCookie(organization.id);
+
+    // Redirect to assets page
+    return redirect("/assets", {
+      headers: [setCookie(organizationCookie)],
+    });
+  } catch (cause) {
+    Logger.error({
+      cause,
+      message: "Error handling OAuth callback",
+      label: "OAuthCallback",
+    });
+
+    return json(
+      { error: { message: "Authentication failed. Please try again." } },
+      { status: cause instanceof ShelfError ? cause.status : 500 }
+    );
+  }
+};
+
+
+export default function OAuthCallbackPage() {
+  const fetcher = useFetcher<OAuthCallbackResponse>();
+  const [error, setError] = useState<string | null>(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (!hasSubmitted) {
+      const fragment = window.location.hash.substring(1);
+      const params = new URLSearchParams(fragment);
+
+      const accessToken = params.get("access_token");
+      const refreshToken = params.get("refresh_token");
+      const expiresIn = params.get("expires_in");
+      const expiresAt = params.get("expires_at");
+
+      if (!accessToken || !refreshToken || !expiresIn) {
+        setError("Missing required OAuth parameters");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("access_token", accessToken);
+      formData.append("refresh_token", refreshToken);
+      formData.append("expires_in", expiresIn);
+      if (expiresAt) {
+        formData.append("expires_at", expiresAt);
+      }
+
+      fetcher.submit(formData, { method: "POST" });
+      setHasSubmitted(true);
+    }
+  }, [hasSubmitted, fetcher]);
+
+  useEffect(() => {
+    if (fetcher.data?.redirectTo) {
+      window.location.href = fetcher.data.redirectTo;
+    } else if (fetcher.data?.error) {
+      setError(fetcher.data.error.message);
+    }
+  }, [fetcher.data]);
 
   return (
-    <div className="flex justify-center text-center">
-      {data?.error ? (
-        <div>
-          {/* If there are validation errors, we map over those and show them */}
-          {validationErrors ? (
-            Object.values(validationErrors).map((error) => (
-              <div className="text-sm text-error-500" key={error.message}>
-                {error.message}
-              </div>
-            ))
-          ) : (
-            // If there are no validation errors, we show the error message returned by the catch in the action
-            <div className="text-sm text-error-500">{data.error.message}</div>
-          )}
-          <Button to="/" className="mt-4">
-            Back to login
-          </Button>
-        </div>
+    <div className="flex min-h-screen flex-col items-center justify-center text-center">
+      {error ? (
+        <>
+          <h1 className="text-lg font-semibold text-red-600">Login Error</h1>
+          <p className="mt-2 text-sm text-red-500">{error}</p>
+          <button
+            onClick={() => (window.location.href = "/login")}
+            className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          >
+            Return to Login
+          </button>
+        </>
       ) : (
-        <Spinner />
+        <>
+          <h1 className="text-lg font-semibold">Completing Login...</h1>
+          <p className="mt-2 text-sm text-gray-500">
+            Please wait while we complete your login.
+          </p>
+        </>
       )}
     </div>
   );
