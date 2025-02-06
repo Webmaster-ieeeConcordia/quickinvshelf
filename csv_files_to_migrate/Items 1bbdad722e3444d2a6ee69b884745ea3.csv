@@ -1,0 +1,436 @@
+﻿Name,Quantity,Bin,Tags,Notes,Links & docs,Date,Location
+Husky Combinational Circuit Kit,1,,IC Kit,,,,Cabinet 5
+Combinational generic box,1,,"IC, IC Kit",,,,Cabinet 5
+High Current Common Mode kit,1,,IC Kit,,,,Cabinet 5
+Atmega family box,1,,"Atmega Kit, IC Kit",,,,Cabinet 5
+IC A/D Conv 16Bit Sampling 28SSOP,1,IC BIN X,IC,,,,IC BIN X
+"SN74AC14N ",2,IC BIN X,IC,,,,"Cabinet 5, IC BIN X"
+"DM74LS14N ",9,IC BIN X,IC,,,,"Cabinet 5, IC BIN X"
+MM74C14N/CD40106BCN,8,IC BIN X,IC,,,,"Cabinet 5, IC BIN X"
+L7812CV Voltage Regulator,99,BB 5,"IC, Voltage Regulator",,,,"BB 5, Grey Shelving"
+SN7482N Full Adder,30,,IC,"Husky Combinational Circuit Kit (https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21) ",,,
+74HC154N,5,,IC,"Husky Combinational Circuit Kit (https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21) ",,,
+SN745161N,15,,IC,"Husky Combinational Circuit Kit (https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21) ",,,Cabinet 5
+74As169 Binary counter up down 4 BIT,8,,IC,"Husky Combinational Circuit Kit (https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21) ",,,Cabinet 5
+"Counter 4Bit up down ",1,,IC,"Husky Combinational Circuit Kit (https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21) ",,,Cabinet 5
+SN74HC74N,2,IC BIN X,IC,,,,IC BIN X
+LM319MXFSCT-ND,7,IC BIN X,IC,,,,IC BIN X
+SN74LS541N,2,IC BIN X,IC,,,,IC BIN X
+TMP175,3,IC BIN X,"IC, Temperature Sensor",,,,IC BIN X
+Shift register 4 stage pipo,6,,IC,"Husky Combinational Circuit Kit (https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21) ",,,Cabinet 5
+Shift register 8bit SIPO,11,,IC,"Husky Combinational Circuit Kit (https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21) ",,,Cabinet 5
+MC68000,2,,IC,"Husky Combinational Circuit Kit (https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21) ",,,Cabinet 5
+SN74LS96N,3,,IC,https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21,,,Cabinet 5
+SN74LS32N,3,,IC,https://www.notion.so/Husky-Combinational-Circuit-Kit-93b0205b72c9463d946ad10d6fa83ff1?pvs=21,,,Cabinet 5
+D FLIP FLOP HEX QUAD,7,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+ADUM1100BRZ,12,IC BIN X,IC,,,,IC BIN X
+D flipflop,60,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+D flipflop Dual,10,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+D  flipflop octal,15,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+D flipflop HEX,100,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+jk flipflop,1,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+D latch octal,15,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+Mux 2:1,15,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+Mux 4:1,30,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+Mux 8:1,30,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+CD4051BCN,12,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+DEMUX/MUX Analog,11,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+Multiplier 4x4 bit,20,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+SN74LS244N,10,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+HEF4555BP,20,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+Ripple Counter 14 stage,20,,IC,"Combinational generic box (https://www.notion.so/Combinational-generic-box-4cb9ad25e9664cc78ad7124455f352f9?pvs=21) ",,,Cabinet 5
+ATMEGA8L-8PU-ND,25,,"Atmega, IC","Atmega family box (https://www.notion.so/Atmega-family-box-90fd03dc12564488afe35bee966bf58e?pvs=21) ",,,Cabinet 5
+ATMEGA328-PU-ND,113,,"Atmega, IC","Atmega family box (https://www.notion.so/Atmega-family-box-90fd03dc12564488afe35bee966bf58e?pvs=21) ",,,Cabinet 5
+ATMEGA88PA-PU-ND,25,,"Atmega, IC","Atmega family box (https://www.notion.so/Atmega-family-box-90fd03dc12564488afe35bee966bf58e?pvs=21) ",,,Cabinet 5
+ATMEGA324A-PU-ND,25,,"Atmega, IC","Atmega family box (https://www.notion.so/Atmega-family-box-90fd03dc12564488afe35bee966bf58e?pvs=21) ",,,Cabinet 5
+ATMEGA324P-PU,1,,"Atmega, IC","Atmega family box (https://www.notion.so/Atmega-family-box-90fd03dc12564488afe35bee966bf58e?pvs=21) ",,,Cabinet 5
+TLC59210IN,3,IC BIN X,IC,,,,IC BIN X
+ZIF IC Sockets,3,BB 3,"Breadboard, IC, IC Socket",,,,BB 3
+Kuman 3.5” inch TFT,1,,Display,,,,Cabinet 3
+uOLED-128-GI,4,,Display,,,,Cabinet 3
+ULCD-220RD,1,,Display,,,,Cabinet 2
+WowWee Digital Photo Frame PF-760,1,,Display,,,,Cabinet 2
+RA8875 Driver Board for 40-pin TFT Touch Display,1,,"Display, Display Drivers",Touch Screen Driver,https://www.adafruit.com/product/1590,,Cabinet 3
+5” 40 pin TFT without Touch Display,1,,Display,,https://www.adafruit.com/product/1680,,Cabinet 3
+Renesas HTS Demo Board,1,,Dev Kit,,,,Cabinet 2
+ROC-RK3328-CC,1,,Dev Kit,,,,Cabinet 2
+ATAVRDRAGON,1,,Dev Kit,,,,Cabinet 2
+AVRISP MKII,4,,Dev Kit,,,,Cabinet 2
+BeagleBoard-xM,1,,Dev Kit,,,,Cabinet 2
+STM 32 Nucleo Development Board,1,,Dev Kit,,,,Cabinet 2
+STM32F0DISCOVERY MB1034B,1,,Dev Kit,,,,Cabinet 2
+stm32nucleo,2,,Dev Kit,,,,Cabinet 2
+Dragon12-Light Development Board,1,,Dev Kit,,,,Cabinet 2
+Breadboard Kit Mini 170 Tie points,1,BB32,Breadboard,,,,"BB32, Grey Shelving"
+30-Pin Breadboard,0,BB32,Breadboard,,,,"BB32, Grey Shelving"
+1 x 40 Breakaway Headers,,BB 3,Breadboard,,,,"BB 3, Grey Shelving"
+2 x 4 Pin Extender,63,BB 3,Breadboard,,,,"BB 3, Grey Shelving"
+2 x 8 Pin Extender,,BB 3,Breadboard,,,,"BB 3, Grey Shelving"
+2 x 9 Pin Extender,5,BB 3,Breadboard,,,,"BB 3, Grey Shelving"
+2 x 10 Pin Extender,5,BB 3,Breadboard,,,,"BB 3, Grey Shelving"
+5 terminal potentiometer,6,BB 4,Potentiometer,,,,"BB 4, Grey Shelving"
+2319020a_y70,1,BB 4,Potentiometer,,,,"BB 4, Grey Shelving"
+200K OHM TRIMPOT VARIABLE RESISTOR 6MM,10,BB 4,Potentiometer,,,,"BB 4, Grey Shelving"
+10 K Ohm Linear Potentiometer,13,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+3006W-1-204 200K Ohm Trimmer,9,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 500 Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 200 Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 20K Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 2K Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 100K Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 100 Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 50K Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 500K Ohm,20,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 1M Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 10K Ohm,5,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 200K Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+Horiz Trimpot 5K Ohm,10,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+P160KNPD Potentionmeter,4,BB 4,Potentiometer,,,,"BB 4, Grey Shelving"
+100 K Ohm Linear Potentiometer,16,BB 4,"Potentiometer, Resistors",,,,"BB 4, Grey Shelving"
+IC ADJ LDO Regulator 8-DIP,3,BB 5,Voltage Regulator,,,,"BB 5, Grey Shelving"
+LT1085 VOLTAGE REGULATOR,15,BB 5,Voltage Regulator,,,,"BB 5, Grey Shelving"
+NJM7809FA Linear Voltage Regulator,2,BB 5,Voltage Regulator,,,,"BB 5, Grey Shelving"
+LM340T5 7805 VOLTAGE REGULATOR,13,BB 5,Voltage Regulator,,,,"BB 5, Grey Shelving"
+LM2577T-ADJ STEP UP VOLTAGE REGULATOR,2,BB 5,Voltage Regulator,,,,"BB 5, Grey Shelving"
+LM7905CT Linear Voltage regulator,15,BB 5,Voltage Regulator,,,,"BB 5, Grey Shelving"
+Linear Voltage Regulator LM78M15CT,18,BB 5,Voltage Regulator,,,,"BB 5, Grey Shelving"
+Arduino Nano,13,BB 6,Arduino,,,,"BB 6, Grey Shelving"
+Arduino Uno,13,BB 6,Arduino,,,,"BB 6, Grey Shelving"
+Arduino Mega,7,BB 7,Arduino,,,,"BB 7, Grey Shelving"
+SHIELD-PROT-02,61,"BB 1, BB 15","Arduino, Shield",,,,"BB 1, BB 15, Cabinet 3, Grey Shelving"
+10-Pin Arduino Stacking Header,10,BB 28,"Arduino, extender",,,,"BB 28, Grey Shelving"
+Wall chargers,9,BB 40,Adapters,,,"September 8, 2024",
+memory IC 24LC64,62,,IC,,,"September 8, 2024",
+HC-SRO4,1,BB 16,"Line Sensor, Sensors",,,"September 8, 2024",
+DC-DC PK10-D5-S15,1,BB 35,Converter,,,"September 8, 2024",
+BC547 C 011 Transitors,4,BB 19,Transistors,,,"September 8, 2024",
+BA10324A Op-Amp,3,,"IC, Op-Amp",,,"September 8, 2024","BB 20, Grey Shelving"
+LED 5mm red,2,BB 21,LED,,,"September 8, 2024",
+oscillators 16Mhz,3,BB 37,Oscillator,,,"September 8, 2024",
+3-8 Decoder/Demux 16-DIP,2,IC BIN X,IC,,,"September 8, 2024",
+Ceramic Capacitor(7),1,BB 39,Capacitors,,,"September 8, 2024",
+LM35CAZ Temperature Sensor,1,,"IC, Sensors",,,"September 8, 2024",IC BIN Y
+Fuse Clips,200,BB 11,Fuse,,,,"BB 11, Grey Shelving"
+SMD component X,1,,SMD,,,,Cabinet 5
+INA145,100,,IC,,,,Cabinet 5
+40-Pin IC Header,5,BB 28,,,,,"BB 28, Grey Shelving"
+TEH70P24R0JE 3-Pin Resistor 24 Ohm,1,ic bin y,Resistors,,,,IC BIN Y
+microphone uni directional 9.7x5.2mm,1,BB 38,Audio,,,,BB 38
+668-1139-ND Speaker 80HM .1W,9,BB 38,Audio,,,,"BB 38, Grey Shelving"
+SN74HC08N,2,IC BIN X,IC,,,,IC BIN X
+PIC Programmer Board,1,,Pic Programmer,,,,Cabinet 2
+ESP-8266,1,BB 7,"ESP, For Wireless",,,,"BB 7, Grey Shelving"
+ESP 32,13,BB 7,ESP,,,,"BB 7, Grey Shelving"
+NFC Key Fob and Cards and sensor,1,BB 16,"NFC, RFID, Sensors",,,,BB 16
+PIR Motion Sensors,13,BB 16,"Motion Sensor, Sensors",,,,BB 16
+Temperature and Humidity Sensor,6,BB 16,"Humidity Sensor, Sensors, Temperature Sensor",,,,BB 16
+Liquid Level Sensor,5,BB 16,"Sensors, Water Sensor",,,,BB 16
+QTR-!A Reflectance Sensor,14,BB 16,"Analog, IR Sensor, Line Sensor, Sensors",Reflectance sensors used in sensing boundries on sumobots and line following robot,,,BB 16
+GRYO 300DEG/S 3.3MV 1.4KHZ,,,Sensors,,,,
+Gyro 300DEG/S 3.3MV 1.4KHZ,1,BB 16,Sensors,,,,"BB 16, Grey Shelving"
+3-Axis Gyroscope,2,BB 16,"IMU, Sensors",,,,BB 16
+3-Axis Accelerometer,3,BB 16,"IMU, Sensors",,,,BB 16
+3-axis Magnetometer (Compass),1,BB 16,"IMU, Sensors",,https://www.adafruit.com/product/1746,,BB 16
+Color Sensors,1,BB 16,"Color Sensor, Sensors",,,,BB 16
+Temperature Measuring Probes,2,BB 16,"Sensors, Temperature Sensor",,,,BB 16
+LEM LTS25-NP,11,BB 16,"Current Sensor, Current Transducer, Sensors",,,,"BB 16, Grey Shelving"
+Soldering Kit,15,BB 8,"Soldering, Soldering Kit",,,,"BB 8, Grey Shelving"
+kit 5v power board,1,,Soldering Kit,,,,Cabinet 2
+RK-370CA-18260,2,BB 9,DC Motor,,,,"BB 9, Grey Shelving"
+XD-775,3,BB 22,"12V, Brushless, DC Motor",,,,"BB 22, Grey Shelving"
+"Brushed DC Motor ",54,BB 9,"DC Motor, motor","28 small, 13 medium (thin), 9 medium (thick), 2 large, 2 long",,,"BB 9, Grey Shelving"
+Servo 9g plastic,7,BB 10,"Servo Motor, motor",,,,"BB 10, Grey Shelving"
+PCA9685,9,BB 22,"Motor Driver, Servo Motor",,,,"BB 22, Grey Shelving"
+5521MG,2,BB 10,"Servo Motor, motor",,,,"BB 10, Grey Shelving"
+MG945,1,BB 10,Servo Motor,,https://www.towerpro.com.tw/product/mg945/,,"BB 10, Grey Shelving"
+MG90S Servo Motor,2,,Servo Motor,,,"September 8, 2024","BB 10, Grey Shelving"
+SSC-32U Servo Controller,1,,"Arduino, Servo Motor, controller",,,"September 8, 2024","BB 22, Grey Shelving"
+F16A250V,6,BB 11,Fuse,,,,"BB 11, Grey Shelving"
+30pcs Maxi Fuses Assortment Kit,2,BB 11,Fuse,,,,BB 11
+T2A250V,150,BB 11,Fuse,,,,"BB 11, Grey Shelving"
+F15A250V,32,BB 11,Fuse,,,,"BB 11, Grey Shelving"
+F0.5AL250V,8,BB 11,Fuse,,,,"BB 11, Grey Shelving"
+F1AL250V,4,BB 11,Fuse,,,,"BB 11, Grey Shelving"
+F30AL250V,5,BB 11,Fuse,,,,"BB 11, Grey Shelving"
+Assorted Car Medium Blade Fuse Set,1,BB 11,Fuse,,,,"BB 11, Grey Shelving"
+Music Maker Shield,3,BB 15,Shield,,,,"BB 15, Cabinet 3"
+generic small fan,1,BB 12,FAN,,,,"BB 12, Grey Shelving"
+SFI12025L,1,BB 12,FAN,,,,"BB 12, Grey Shelving"
+"Generic 12V fan ",4,BB 12,FAN,,,,"BB 12, Grey Shelving"
+CPU Cooler,7,BB 33,"Cooler, FAN",,,,"BB 33, Grey Shelving"
+HXS C12025B,6,BB 12,FAN,,,,"BB 12, Grey Shelving"
+Generic 24V Fan,2,BB 12,FAN,,,,"BB 12, Grey Shelving"
+FFB0912EHE,1,BB 12,FAN,,,,"BB 12, Grey Shelving"
+DF1202512RFUN,1,BB 12,FAN,,,,"BB 12, Grey Shelving"
+SF12025L,1,BB 12,FAN,,,,"BB 12, Grey Shelving"
+F1588 JMC DATECH 12 VDC FAN,1,BB 12,FAN,,,,"BB 12, Grey Shelving"
+AFB0612MC DELTA ELECTRONICS DC12V FAN,2,BB 12,FAN,,,,"BB 12, Grey Shelving"
+Heatsinks,-1,BB 13,Heatsink,,,,"BB 13, Grey Shelving"
+Heat Sinks,7,,Heatsink,Assorted,,,
+SMD to PCB Board,4,BB 14,"PCB, SMD",,,,"BB 14, Grey Shelving"
+SOIC - 8 PCB Breakout Board,5,BB 14,"PCB, SMD",,,,"BB 14, Grey Shelving"
+IC RF Transceiver,5,BB 17,RF,,,,BB 17
+Antenna (Generic),4,BB 17,"Antenna, RF",,,,"BB 17, Grey Shelving"
+XBee Pro S1 - RF Module,2,BB 17,"2.4 GHz, RF",,https://hub.digi.com/support/products/digi-xbee/digi-xbee-s1/,,BB 17
+XBee S2 - RF Module,2,BB 17,"2.4 GHz, RF",,,,BB 17
+nRF24L01 Transceiver Modules,2,BB 17,"Arduino Modules, For Wireless, RF",2.4 – 2.5GHz,https://howtomechatronics.com/tutorials/arduino/arduino-wireless-communication-nrf24l01-tutorial/,,BB 17
+433MHz RF Transmitter and Receiver Wireless Modules,6,BB 17,"For Wireless, RF",,https://www.amazon.ca/Transmitter-Receiver-Wireless-Modules-Raspberry/dp/B01N4WBL4V,,BB 17
+RASPBERRY PI ZERO 2,1,,Raspberry Pi,,,,Cabinet 2
+Raspberry Pi 3 Model B,2,,Raspberry Pi,,,,Cabinet 2
+Raspberry Pi 4 Model B,0,,Raspberry Pi,,,,Cabinet 2
+Raspberry Pi 1,5,BB 18,Raspberry Pi,,,,"BB 18, Grey Shelving"
+Raspberry PI Pico,2,BB 18,Raspberry Pi,,,,"BB 18, Grey Shelving"
+"TSM480P06 ",7,BB 19,MOSFET,,,,"BB 19, Grey Shelving"
+"TSM340N06
+
+ ",8,BB 19,MOSFET,,,,"BB 19, Grey Shelving"
+IRFP2907,8,BB 19,MOSFET,,,,"BB 19, Grey Shelving"
+"RFP30N06LE ",1,BB 19,MOSFET,,,,"BB 19, Grey Shelving"
+DragonBoard 410c,1,,"Dev Kit, Qualcomm",,,,Cabinet 2
+TL0821P,4,BB 20,Op-Amp,,https://www.alldatasheet.com/view_datasheet.jsp?Searchword=TL0821P&gad_source=1&gclid=Cj0KCQjww5u2BhDeARIsALBuLnMeMmZ5v78lSU6Q_9biIqaPbJ6aXLYP-_u63vjL9VrZ6KSqwvSHEesaAg4wEALw_wcB,,"BB 20, Grey Shelving"
+INA2126P,4,BB 20,Op-Amp,,,,"BB 20, Grey Shelving"
+LW13700N,6,BB 20,Op-Amp,,,,"BB 20, Grey Shelving"
+49720A,15,BB 20,Op-Amp,,https://ti.com/lit/ds/symlink/lme49720.pdf?ts=1724312568884&ref_url=https%253A%252F%252Fwww.google.com%252F,,"BB 20, Grey Shelving"
+TL072BCP OP-AMP,2,BB 20,Op-Amp,,,,"BB 20, Grey Shelving"
+RC4559P,3,BB 20,Op-Amp,,https://www.ti.com/lit/ds/symlink/rc4559.pdf?ts=1724375572373&ref_url=https%253A%252F%252Fwww.mouser.ca%252F,,"BB 20, Grey Shelving"
+TLE2081,9,BB 20,Op-Amp,,https://www.alldatasheet.com/datasheet-pdf/download/28973/TI/TLE2081.html,,"BB 20, Grey Shelving"
+49720NA,2,BB 20,Op-Amp,,https://www.ti.com/lit/ds/symlink/lme49720.pdf?ts=1724295777400&ref_url=https%253A%252F%252Fwww.mouser.com%252F,,"BB 20, Grey Shelving"
+LED 1m Strip,5,BB 21,LED,,,,"BB 21, Grey Shelving"
+"8x8 Red-Green Common Anode LED Matrix ",2,BB 21,"Analog, Display, LED",,,,BB 21
+"Miniature 0.8"" 8x8 Pure Green LED Matrix",2,BB 21,"Analog, Display, LED",,https://www.adafruit.com/product/1624,,BB 21
+"Serial 7-Segment Display ",4,BB 21,"7-segment, Display, I2C, LED",,https://www.sparkfun.com/products/11441,,BB 21
+Assorted Transistors TO-92 footprint,400,BB 19,"Through-hole, Transistors","A12,  H31,",,,BB 19
+ARD-HC-05,8,BB 17,"Arduino Modules, Bluetooth, Bluetooth Module",,https://howtomechatronics.com/tutorials/arduino/arduino-and-hc-05-bluetooth-module-tutorial/,,BB 17
+L298N Motor Drivers,5,BB 22,"DC Motor, Motor Driver",beginner motor driver,,,BB 22
+Polulu VNH5019,2,BB 22,"Arduino Modules, DC Motor, Motor Driver",Arduino Shield,,,BB 22
+"Cytron MDD10A ",1,BB 22,"DC Motor, Motor Driver",Dual channel 10 A,,,BB 22
+MAX31865 RTD Sensor,1,BB 16,Temperature Sensor,Resistance temperature detectors (RTDs),https://learn.adafruit.com/adafruit-max31865-rtd-pt100-amplifier/overview,,BB 16
+Neo-6 GPS receiver,1,BB 17,"3.3V, GPS",,https://lastminuteengineers.com/neo6m-gps-arduino-tutorial/,,BB 17
+SparkFun Venus GPS receiver,1,BB 17,"3.3V, GPS",,,,BB 17
+L293D IC bidirectional motor driver IC,2,,IC,,hu,"September 8, 2024",
+IR led remote,1,BB 16,IR Sensor,,,,BB 16
+Jsumo Microstart Module,1,BB 16,IR Sensor,,,,BB 16
+SHARP 2Y0A21F65,17,BB 16,"IR Sensor, Sensors",,,,BB 16
+DS3231 Real Time Clock,2,BB 23,"Arduino Modules, Real Time Clock",,https://howtomechatronics.com/tutorials/arduino/arduino-ds3231-real-time-clock-tutorial/,,BB 23
+4D Arduino Adapter Shield,1,BB 23,Arduino Modules,,,,BB 23
+Arduino Shields,9,BB 23,Arduino Modules,,,,"BB 23, Cabinet 5"
+LCD Display - Analog,3,BB 23,"Analog, Arduino Modules, Display",,,,BB 23
+LCD Display - I2C,2,BB 23,"Arduino Modules, Display, I2C",,,,BB 23
+1.5 inch OLED Module,,,"Arduino Modules, Display, I2C, SPI",,,,Cabinet 3
+USB to TTL 5PIN Serial Converter,1,BB 23,Arduino Modules,,,,"BB 23, Grey Shelving"
+NPN 2N2222A,2,BB 19,Transistors,,,,"BB 19, Grey Shelving"
+TXS0108E 8 Channel Logic Level Converter,5,BB 23,"3.3V, 5V, Logic Level Shifter",3.3V 5V,,,"BB 23, Grey Shelving"
+"Small 7-Segment Display ",10,BB 21,"7-segment, Analog, Display, LED",,,,BB 21
+"Large 7-Segment Display ",8,BB 21,"7-segment, Analog, Display, LED",,,,BB 21
+030G24R Pressure Sensor,2,,"IC, Sensors",,,"September 8, 2024",IC BIN Y
+40PC015G2A Pressure Sensor,1,,"IC, Sensors",,,"September 8, 2024",IC BIN Y
+ESP-01S,1,BB 17,"Arduino Modules, For Wireless, WIFI",,https://www.taydaelectronics.com/datasheets/files/ESP-01S.pdf,,BB 17
+Solar Panel - Small,10,BB 24,Solar,,,,"BB 24, Grey Shelving"
+Solar Panel - Large,1,BB 24,Solar,,,,"BB 24, Grey Shelving"
+MAX98306 - Stereo Amplifier,1,BB 23,"Arduino Modules, Audio"," 3.7W Class D Audio",https://www.adafruit.com/product/987,,BB 23
+ESP32 Camera,2,BB 23,"Arduino Modules, Camera",,,"September 8, 2024","BB 23, Grey Shelving"
+STM32F070F6P6,8,,IC,,,"September 8, 2024",IC BIN Y
+M1-12S05 D-LINK 5.0V 2.5 A,1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+CS18D120150FUF CSEC 12.0VDC 1.5 A,1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+SWITCHING ADAPTOR FLIR 5V 2000mA,1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+Replacement AC Adapter 12V 6A,1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+ZS-1210-HR AC/DC ADAPTER 12V 1A,1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+TC ELECTRONIC 9V  0.67 A,1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+JLH121350400U 13.5VDC 400mA,1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+EA0061WAA BESTEC 12V 0.5A,1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+SFE-9FD SWITCH POWER ADAPTER 9V DC 650 mA,4,BB 25,power supply,,,,"BB 25, Grey Shelving"
+WerkTough 13.5 V 400mAh,2,BB 25,power supply,,,,"BB 25, Grey Shelving"
+T090060-2B1 TP-LINK 9V 0.6A,1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+micro usb charger 5.2v 2.5A,7,BB 25,power supply,,,,"BB 25, Grey Shelving"
+" SF-889 AC/DC ADAPTER OUTPUT 9V DC 1A",6,BB 25,power supply,,,,"BB 25, Grey Shelving"
+"ZF120A-1202000 12V ",1,BB 25,power supply,,,,"BB 25, Grey Shelving"
+SN74HC148N,15,BB 26,Encoder,,https://www.mouser.ca/ProductDetail/Texas-Instruments/SN74HC148N?qs=p6YqzpSxLIz%2Fj0UxJt82UQ%3D%3D&utm_id=10159302932&gad_source=1&gclid=Cj0KCQjww5u2BhDeARIsALBuLnMhf4LLBcmNBRK1T2VrX-t6mOqJ8MwXRobl7595p-kwBqH9n-_gawAaAjrlEALw_wcB,,"BB 26, Grey Shelving"
+Miscallaneous Wheels,36,BB 27,wheels,Weird Adaptors,,,"BB 27, Grey Shelving"
+FW-11-04-G-D-415-100,12,BB 28,extender,,,,"BB 28, Grey Shelving"
+FTSH-122-01-L,4,BB 28,extender,,,,"BB 28, Grey Shelving"
+Hirose DF11-16DP-2DS Connector Header Through Hole,15,BB 28,extender,,,,"BB 28, Grey Shelving"
+miscellaneous extender,-1,BB 28,extender,Really old weird extenders,,,"BB 28, Grey Shelving"
+random screws,-1,,screws,old screws,,,Cabinet 6
+FBS 2-5 Plug-in bridge,50,BB 29,Connector,,,,BB 29
+DF3-4S-2C,23,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF3-8S-2C,24,BB 29,Connector,,,,"BB 29, Grey Shelving"
+MEDIUM 90 DEGREE CONNECTORS,4,BB 29,Connector,,,,"BB 29, Grey Shelving"
+WM1787-ND,3,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF11-18DS-2C,5,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF11-6DS-2C,26,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF11-30DEP,3,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF11-16DEP-2C,6,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DW-02-07-G-S-200,15,BB 28,Connector,,,,"BB 28, Grey Shelving"
+DF11-6DP-2DS,6,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF11-10DP-2DS(22() TIN,22,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF11-8DP-2DPS(52),11,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF11-8DP-2DSA,17,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF11-8DEP-2C,32,BB 29,Connector,,,,"BB 29, Grey Shelving"
+DF11-8DEP-2C,32,BB 29,Connector,,,,"BB 29, Grey Shelving"
+2-PIN 5MM PITCH SCREW TERMINAL BLOCK,8,BB 29,"Connector, power connectors",,,,"BB 29, Grey Shelving"
+Molex 5mm,1,BB 29,Connector,,,,BB 29
+JST-XH Connector kit,1,BB 29,Connector,,,,"BB 29, Grey Shelving"
+Wire Connectors,6,BB 29,"Connector, Heavy Duty",,,,"BB 29, Grey Shelving"
+USB To Small Barrell Plug Cable,1,,"Cable, Usb",,,,
+250V Male Power Connector,2,BB 31,power connectors,,,,BB 31
+15A 125V Female Power Connector,20,BB 31,power connectors,,,,"BB 31, Grey Shelving"
+XT-90 CONNECTOR,7,BB 31,power connectors,,,,"BB 31, Grey Shelving"
+XT-60 connector,7,BB 31,power connectors,,,,"BB 31, Grey Shelving"
+PJ-002A 2.1MM BARREL PLUG CONNECTOR,5,BB 31,power connectors,,,,"BB 31, Grey Shelving"
+RFID Reader Module,1,BB 16,"NFC, RFID, Sensors",,,,BB 16
+MXD1230,8,,LASER,,,,Cabinet 2
+AC to DC Bridge Rectifier,28,BB 35,Converter,,,,BB 35
+RAC03-05SK,,BB 35,Converter,,,,"BB 35, Grey Shelving"
+NME24055 Isolated 1W Single Output DC/DC Converters,2,BB 35,Converter,,,,"BB 25, Grey Shelving"
+W-P40/20 DC24V 250N Suction,1,BB 34,Electromagnet,,,,"BB 34, Grey Shelving"
+SN74HC595N,100,BB 26,Shift Register,,,,"BB 26, Grey Shelving"
+Ender-3 Pro Silent Motherboard,1,,Motherboard,,,,Cabinet 2
+TAU-1040T,1,BB 22,"Actuator, motor",,,,"BB 22, Grey Shelving"
+lm2596 DC-DC,1,BB 35,buck converter,,,,"BB 35, Grey Shelving"
+ethernet connector,,BB 30,ethernet connector,,,,"BB 30, Grey Shelving"
+G6K-2G-Y-DC5 Low Signal Relay,7,BB 36,Relay,,,,"BB 36, Grey Shelving"
+HK4C100F-DC12V-SHC Relay,10,BB 36,Relay,,,,"BB 36, Grey Shelving"
+6A277VAC 250VAC 5-Pins Power Relay,14,BB 36,Relay,,,,"BB 36, Grey Shelving"
+Relay Gen Purpose SPST 16A 5V,1,BB 36,Relay,,,,"BB 36, Grey Shelving"
+Wire Connector 15 GJ,100,BB 29,terminal,,,,"BB 29, Grey Shelving"
+ABM8 16 MHz,4,BB 37,Oscillator,,,,"BB 37, Grey Shelving"
+CTX626CT-ND Oscillator VCXO 4.096 MHz,1,BB 37,Oscillator,,,,"BB 37, Grey Shelving"
+HC49 4.00 MHz,1,BB 37,Oscillator,,,,"BB 37, Grey Shelving"
+AD8343 High IP3 Active Mixer,2,IC BIN X,IC,,,,IC BIN X
+ADF4360-7 Integrated Synthesizer / VCO,1,IC BIN X,IC,,,,IC BIN X
+wrp102,1,ic bin y,IC,,,,IC BIN Y
+Audio Jack,1,BB 29,Connector,,,,BB 29
+https://www.digikey.ca/en/products/detail/microchip-technology/MCP4822-E-P/951465 A/D Converter,2,ic bin y,IC,,,,IC BIN Y
+LT1677CN8 Linear Amplifier,4,ic bin y,IC,,,,IC BIN Y
+https://www.mouser.ca/ProductDetail/Texas-Instruments/LM13700MX-NOPB?qs=X1J7HmVL2ZEZitMdTjSZsg%3D%3D Linear Amplifier,4,ic bin y,IC,,,,IC BIN Y
+MCP3008 A/D Converter,9,ic bin y,IC,,,,IC BIN Y
+LTV846 Isolator Transistor Output,1,ic bin y,IC,,,,IC BIN Y
+IRLL014 Voltage Regular,14,ic bin y,IC,,,,IC BIN Y
+9-pin D-sub,6,BB 29,Connector,,,,BB 29
+FOD817CS Optocouplers,1,ic bin y,IC,,,,IC BIN Y
+815Y Optocouplers,1,ic bin y,IC,,,,IC BIN Y
+1212 8-pin SMT THT Adapter,17,BB 14,SMD,,,,"BB 14, Grey Shelving"
+M83513/03-A03C Connector,3,BB 29,Connector,,,,BB 29
+PVG3A101C01R00 Potentiometer,7,BB 4,Potentiometer,,,,BB 4
+SEN0298 Pressure Sensor,10,BB 16,Sensors,,,,BB 16
+LT1761ES5-5 Linear Voltage Regulator,6,ic bin y,IC,,,,IC BIN Y
+AD8599ARZ Precision Amplifier,5,ic bin y,IC,,,,IC BIN Y
+C3008368 Optocouplers,10,ic bin y,IC,,,,IC BIN Y
+TLE5205-2G Half Bridge,1,,IC,,,"September 8, 2024",IC BIN Y
+TPS56528DDAR Voltage Regulator,1,,"IC, Voltage Regulator",,,"September 8, 2024",IC BIN Y
+MDB8S Bridge Rectifier,4,,IC,,,"September 8, 2024",IC BIN Y
+electric motor,8,,DC Motor,,,"September 8, 2024","BB 39, Grey Shelving"
+LM2576T Simple Switcher,2,,IC,,,"September 8, 2024",IC BIN Y
+G6S-2G-DC24 Low Signal Relay,2,,Relay,,,"September 8, 2024","BB 36, Grey Shelving"
+Servo headers,-1,BB 10,Servo Motor,,,"September 8, 2024",
+NC38 32.768KHZ,1,BB 37,Oscillator,,,,"BB 37, Grey Shelving"
+MC145027P Decoder Remote Control,1,,IC,,,"September 8, 2024",IC BIN Y
+semiconductor,6,,,,,"September 8, 2024",IC BIN Y
+cp2,4,,semiconductors,,,"September 8, 2024",IC BIN Y
+V7805-2000 DC Converter,9,,Converter,,,"September 8, 2024","BB 35, Grey Shelving"
+3-PIN Terminal Block,10,,"Connector, power connectors",,,"September 8, 2024",BB 29
+rc brushless controller,1,,"40A, RC, controller",,,"September 8, 2024","BB 39, Grey Shelving"
+ASDXRRX005PGAA5 Pressure Sensor,6,,"IC, Sensors",,,"September 8, 2024",IC BIN Y
+HAA27 Switch for Alarm,3,,Sensors,,,"September 8, 2024","BB 16, Grey Shelving"
+GP2Y0D810Z0F Digital Distance Sensor 10cm,1,,Sensors,,,"September 8, 2024","BB 16, Grey Shelving"
+LM555CN Timer,10,,Oscillator,,,"September 8, 2024","BB 37, Grey Shelving"
+PNP TIP32CG,5,,Transistors,,,"September 8, 2024","BB 19, Grey Shelving"
+NPN 2N3904,10,,Transistors,,,"September 8, 2024","BB 19, Grey Shelving"
+32 Pin Extender,4,,extender,,,"September 8, 2024","BB 3, Grey Shelving"
+40 Pin Extender,4,,extender,,,"September 8, 2024","BB 3, Grey Shelving"
+SRD-05VDC-SL-C Relay,1,,Relay,,,"September 8, 2024","BB 36, Grey Shelving"
+DA-TSSOP20-P65 10-pin SMT THT Adapter,1,,SMD,,,"September 8, 2024","BB 25, Grey Shelving"
+TB6612FNG Motor Driver,1,,Motor Driver,,,"September 8, 2024","BB 22, Grey Shelving"
+"20 AMP Fuse ",3,,Fuse,,,"September 8, 2024",BB 11
+10 AMP Fuse,3,,Fuse,,,"September 8, 2024",BB 11
+30 AMP Fuse,3,,Fuse,,,"September 8, 2024",BB 11
+40 AMP Fuse,3,,Fuse,,,"September 8, 2024",BB 11
+50 AMP Fuse,3,,Fuse,,,"September 8, 2024",BB 11
+New item,,,,,,"September 8, 2024",
+rc brushless motor,2,,"Brushless, motor",,,"September 8, 2024","BB 39, Grey Shelving"
+60 AMP Fuse,6,,Fuse,,,"September 8, 2024",BB 11
+70 AMP Fuse,6,,Fuse,,,"September 8, 2024",BB 11
+80 AMP Fuse,3,,Fuse,,,"September 8, 2024",BB 11
+100 AMP Fuse,1,,Fuse,,,"September 8, 2024",BB 11
+LM2596 Voltage Regulator,1,,Voltage Regulator,,,"September 8, 2024",BB 5
+Low Voltage Buzzer,1,,Voltage Buzzer,,,"September 8, 2024",BB 5
+New item,,,,,,"September 8, 2024",
+A1560 Heating Element,4,,Soldering,,,"September 8, 2024",BB 8
+SOL-DOOR-02,1,,"Actuator, motor",,,"September 8, 2024",BB 22
+"NE555N Timer ",1,,Oscillator,,,"September 8, 2024","BB 37, Grey Shelving"
+XL6019,1,,power supply,,,"September 8, 2024",BB 25
+New item,,,,,,"September 8, 2024",IC BIN Y
+Engraver,,,,,,"September 8, 2024",
+" generator",3,,,,,"September 8, 2024",
+high voltage pulse generator,3,,power supply,,,"September 8, 2024","BB 25, Grey Shelving"
+LM338T Voltage Regulator,5,,"IC, Voltage Regulator",,,"September 8, 2024",IC BIN Y
+gf0501 speaker,1,,Audio,,,"September 8, 2024",BB 38
+PDQ30 DC to DC Converter,1,,Converter,,,"September 8, 2024",BB 35
+mini motor,1,,,,,"September 8, 2024",
+mini motor,1,,,,,"September 8, 2024",BB 22
+AMS1117 Voltage Regulator,27,,Voltage Regulator,,,"September 8, 2024","BB 5, Grey Shelving"
+738W Power Conector,8,,power connectors,,,"September 8, 2024",BB 31
+BT136S Voltage Regulator,7,,Voltage Regulator,,,"September 8, 2024","BB 5, Grey Shelving"
+G5LE-1A4 Relay,4,,Relay,,,"September 8, 2024",BB 36
+Z184-ND Relay,1,,Relay,,,"September 8, 2024",BB 36
+SN754410NE,10,,IC,,,"September 8, 2024",IC BIN X
+2N7000TACT-ND,1,,Transistors,,,"September 8, 2024",BB 19
+2N3906-AP,1,,Transistors,,,"September 8, 2024","BB 19, Grey Shelving"
+phototransistor 475-1443-ND,10,,"Transistors, phototransistor",,,"September 8, 2024",BB 19
+CP-3536NG-ND,20,,"Audio, Connector",,,"September 8, 2024",BB 38
+New item,,,,,,"September 8, 2024",
+CD4007UBE,10,,IC,,,"September 8, 2024",IC BIN Y
+CD74HC4316E,5,,IC,,,"September 8, 2024",IC BIN Y
+2N4403-AP,10,,,,,"September 8, 2024",BB 19
+HDSP-313E Numerical Red LED,10,,LED,,,"September 8, 2024","BB 21, Grey Shelving"
+IRFP4110pbf-ND,10,,MOSFET,,,"September 8, 2024",BB 19
+ATP302-TL-HOSCT-ND,6,,MOSFET,,,"September 8, 2024","BB 19, Grey Shelving"
+1727-2596-1-ND,12,,MOSFET,,,"September 8, 2024",BB 19
+IRLB8721PBF,5,,MOSFET,,,"September 8, 2024",BB 19
+DMN2004KDICT-ND,10,,MOSFET,,,"September 8, 2024",BB 19
+IXTH120P065T,5,,MOSFET,,,"September 8, 2024",BB 19
+160-2038-1-ND,10,,"Transistors, optoisolator",,,"September 8, 2024",BB 19
+Wall Adapter Micro USB,2,,"Adapters, Usb",,,"September 8, 2024",Cabinet 4
+Large Servo,14,,Servo Motor,,,"September 8, 2024","BB 10, Grey Shelving"
+New item,,,,,,"September 9, 2024",
+New item,,,,,,"September 9, 2024",
+DVI Cable,5,,,,,"September 9, 2024","Cabinet 4, WB1"
+VGA cables,2,,"Connector, IT",,,"September 9, 2024","Cabinet 4, WB1"
+usb 2.0 Micro B Cab,12,,"IT, usb connectors",,,"September 9, 2024","Cabinet 4, WB2"
+USB 2.0 B,18,,"IT, usb connectors",,,"September 9, 2024","Cabinet 4, WB2"
+DC 5v Power,3,,"IT, power connectors",,,"September 9, 2024","Cabinet 4, WB2"
+usb to usb,1,,"IT, Usb",,,"September 9, 2024","Cabinet 4, WB2"
+New item,,,,,,"September 9, 2024",
+USB 2.0 mini B,2,,"IT, usb connectors",,,"September 9, 2024","Cabinet 4, WB2"
+usb 3.0 Micro B (hard-drive),2,,"IT, usb connectors",,,"September 9, 2024","Cabinet 4, WB2"
+usb to usbc,4,,"IT, usb connectors",,,"September 9, 2024","Cabinet 4, WB2"
+New item,,,,,,"September 9, 2024",
+USB Drive,2,,"Storage, Usb",,,"September 12, 2024",Cabinet 4
+12V Power Supply,1,,"12V, power supply",Max 3A,,"September 12, 2024",Cabinet 4
+12mm Label Tape White,5,,"IT, Materials",,,"September 13, 2024","Cabinet 4, WB 4"
+HDMI,5,,"Connector, IT",,,"September 13, 2024","Cabinet 4, WB3"
+Lenovo Mouse,1,,"IT, Mouse",,,"September 13, 2024","Cabinet 4, WB 4"
+USB to VGA,1,,"Usb, VGA",,,"September 13, 2024","Cabinet 4, WB1"
+"Long Ethernet ",1,,"IT, ethernet connector, green",,,"September 13, 2024","Cabinet 4, WB5"
+Long Ethernet,1,,"IT, ethernet connector",,,"September 13, 2024","Cabinet 4, WB5"
+TP link - switch,1,,"IT, internet",,,"September 13, 2024","Cabinet 4, WB5"
+TP link - modem,1,,"IT, internet",,,"September 13, 2024","Cabinet 4, WB5"
+RCA Phono TV Plugs,1,,"Cable, IT",,,"September 13, 2024","Cabinet 4, WB 4"
+Dell mouse,3,,"IT, hardware",,,"September 13, 2024","Cabinet 4, WB6"
+DC 12v 1 to 4 Cable,1,,"Cable, IT",,,"September 13, 2024","Cabinet 4, WB 4"
+New item,,,,,,"September 18, 2024",
+Switches/Buttons Box,1,RedBox1,Switches/Buttons,,,"September 27, 2024",ECAStorage
+Box of Capacitors,2,RedBox1,Capacitors,,,"September 27, 2024",ECAStorage
+,,,,,,"September 27, 2024",
+Box of Resistors,2,RedBox1,Resistors,,,"September 27, 2024",ECAStorage
+Box of Diodes,1,RedBox1,Diodes,,,"September 27, 2024",ECAStorage
+Box of Power Supplies,1,RedBox1,power supply,,,"September 27, 2024",ECAStorage
+PCB Tutorial Box,2,RedBox2,PCB,,,"September 27, 2024",ECAStorage
+PSU Tutorial Kit,1,RedBox2,PSU,,,"September 27, 2024",ECAStorage
+"Footswitch ",1,RedBox2,Footswitch,,,"September 27, 2024",ECAStorage
+Miscellaneous Boxes,2,RedBox1,"ConnectorStuff, Sensors",,,"September 27, 2024",ECAStorage
+Submerisble Pump,1,BB 22,PUMP,,,"November 1, 2024",BB 39
+New item,,,,,,"November 2, 2024",
+"Inline Wire Connectors ",48,BB 29,ConnectorStuff,,,"November 2, 2024",BB 29
+New item,,,,,,"November 2, 2024",
+221 Series Wire Connectors,28,BB 29,Connector,,,"November 2, 2024",BB 29

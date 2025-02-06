@@ -71,6 +71,12 @@ To set up Shelf:
    ```bash
    npm install
    ```
+   !!!
+   If install warns you that react something is failing, use node version manager to set the appropriate version of node.
+
+
+   also! create a .env (link in chat from nicho)
+
 3. **Setup your database:**
 
    - Create your supabase database: [Guide](./docs/get-started.md#development)
@@ -104,3 +110,5 @@ Shelf.nu is licensed under the [AGPL-3.0 License](./LICENSE).
 <p align="center">
 ⭐️ Star the repo if you find Shelf helpful!
 </p>
+
+
