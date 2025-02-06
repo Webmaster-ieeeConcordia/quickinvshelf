@@ -64,8 +64,8 @@ To set up Shelf:
 
 1. **Clone the Repo**:
    ```bash
-   git clone https://github.com/Shelf-nu/shelf.nu.git
-   cd shelf.nu
+   git clone https://github.com/Webmaster-ieeeConcordia/quickinvshelf.git
+   cd quickinvshelf
    ```
 2. **Install Dependencies**:
    ```bash
