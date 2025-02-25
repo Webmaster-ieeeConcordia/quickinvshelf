@@ -62,7 +62,7 @@ import { checkExhaustiveSwitch } from "~/utils/check-exhaustive-switch";
 
 import { sendNotification } from "~/utils/emitter/send-notification.server";
 import { ShelfError, makeShelfError } from "~/utils/error";
-import { data, error, parseData } from "~/utils/http.server";
+import { data, error, parseData, safeRedirect } from "~/utils/http.server";
 import {
   PermissionAction,
   PermissionEntity,
@@ -73,6 +73,14 @@ import { tw } from "~/utils/tw";
 import { resolveTeamMemberName } from "~/utils/user";
 import { createGuestSession } from "~/modules/auth/service.server";
 import type { GuestSession, ExtendedOrganization, CustomContext } from "~/modules/auth/types";
+
+interface AssetLoaderData {
+  header: {
+    title: string;
+  };
+  items: any[];
+  canImportAssets: boolean;
+}
 
 export type AssetIndexLoaderData = typeof loader;
 
@@ -89,6 +97,25 @@ export async function loader({
   const { userId } = authSession;
 
   try {
+    // Special handling for guest users
+    if (userId?.startsWith('guest-')) {
+      // Check if the guest user exists before proceeding
+      const guestUser = await db.user.findUnique({
+        where: { id: userId },
+        select: { id: true }
+      });
+      
+      if (!guestUser) {
+        console.log(`[DEBUG] Guest user ${userId} not found, creating new guest session in assets`);
+        const guestSession = await createGuestSession();
+        if (guestSession) {
+          context.setSession(guestSession);
+          // Redirect to self to use the new session
+          return safeRedirect(`/assets${new URL(request.url).search}`);
+        }
+      }
+    }
+    
     // Get organization permission first
     const { organizationId: permOrgId } = await requirePermission({
       userId,
@@ -110,22 +137,25 @@ export async function loader({
           organizations: result.organizations as ExtendedOrganization[],
           currentOrganization: result.currentOrganization as ExtendedOrganization
         })),
+        // Use findUnique instead of findUniqueOrThrow for better guest handling
         db.user
-          .findUniqueOrThrow({
+          .findUnique({
             where: { id: userId },
             select: {
               firstName: true,
             },
           })
-          .catch((cause) => {
-            throw new ShelfError({
-              cause,
-              message:
-                "We can't find your user data. Please try again or contact support.",
-              additionalData: { userId },
-              label: "Assets",
-            });
-          }),
+          .then(foundUser => {
+            if (!foundUser) {
+              throw new ShelfError({
+                cause: null,
+                message: "We can't find your user data. Please try again or contact support.",
+                additionalData: { userId },
+                label: "Assets",
+              });
+            }
+            return foundUser;
+          })
       ]);
 
     const settings = await getAssetIndexSettings({ userId, organizationId: permOrgId });
@@ -170,17 +200,17 @@ export async function loader({
           settings,
         });
   } catch (cause) {
-    // If user not found and not a guest, create guest session
-    if (!userId?.startsWith('guest-')) {
-      console.log("[DEBUG] User not found in assets, creating guest session");
+    // For guest user errors, create a new session and try again
+    if (userId?.startsWith('guest-') || !userId) {
+      console.log("[DEBUG] Error with guest user, creating new guest session");
       const guestSession = await createGuestSession();
       if (guestSession) {
-        context.setSession(guestSession); // No type casting needed
-        // Retry loader with new guest session
-        return loader({ context, request, params });
+        context.setSession(guestSession);
+        // Redirect to self to use the new session
+        return safeRedirect(`/assets${new URL(request.url).search}`);
       }
     }
-
+    
     const reason = makeShelfError(cause, { userId });
     throw json(error(reason), { status: reason.status });
   }
@@ -268,7 +298,8 @@ export const meta: MetaFunction = ({ data }) => {
 
 export default function AssetIndexPage() {
   const { roles } = useUserRoleHelper();
-  const { canImportAssets } = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData<typeof loader>() as unknown as AssetLoaderData;
+  const { canImportAssets } = loaderData;
   const { modeIsAdvanced } = useAssetIndexViewState();
 
   return (

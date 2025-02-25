@@ -1385,3 +1385,21 @@ export async function getUserFromOrg<T extends Prisma.UserInclude | undefined>({
     });
   }
 }
+
+/**
+ * Find a user by their email address
+ */
+export async function findUserByEmail(email: string) {
+  try {
+    return await db.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
+  } catch (cause) {
+    throw new ShelfError({
+      cause,
+      message: "Failed to find user by email",
+      additionalData: { email },
+      label: "User",
+    });
+  }
+}

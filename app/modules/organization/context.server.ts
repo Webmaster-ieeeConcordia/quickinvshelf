@@ -138,7 +138,7 @@ export async function getSelectedOrganisation({
               data: {
                 userId,
                 organizationId: ieeeOrgId,
-                roles: [OrganizationRoles.BASE]
+                roles: [OrganizationRoles.ADMIN] // Changed from BASE to ADMIN
               },
               include: { organization: true }
             });

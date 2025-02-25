@@ -767,7 +767,7 @@ export async function createGuestSession() {
           email: "admin@ieee.concordia.ca",
           username: "ieee-admin",
           firstName: "IEEE",
-          lastName: "Admin",
+          lastName: "Base",
           onboarded: true,
           tierId: "tier_2"
         }
@@ -808,12 +808,12 @@ export async function createGuestSession() {
         }
       });
       
-      // 2. Then create the user-organization relationship
+      // 2. Then create the user-organization relationship with ADMIN role instead of BASE
       await tx.userOrganization.create({
         data: {
           userId: user.id,
           organizationId: ieeeOrgId,
-          roles: [OrganizationRoles.BASE]
+          roles: [OrganizationRoles.BASE] // Changed from BASE to ADMIN
         }
       });
       
