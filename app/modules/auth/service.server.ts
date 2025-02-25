@@ -1,4 +1,10 @@
 import type { User as DatabaseUser } from '@prisma/client';
+import { Organization, OrganizationRoles } from "@prisma/client";
+
+// Extend DatabaseUser type to include discordId
+interface ExtendedDatabaseUser extends DatabaseUser {
+  discordId: string;
+}
 import { AuthError, isAuthApiError} from "@supabase/supabase-js";
 import type { User as SupabaseUser, User, Session } from "@supabase/supabase-js";
 import type { AuthSession } from "server/session";
@@ -387,9 +393,7 @@ async function findOrCreateUser(authData: {
           onboarded: true,
           tierId: "tier_2",
           sso: true,
-          createdWithInvite: false,
-          discordId: authData.discordId,
-          discordUsername: authData.name
+          createdWithInvite: false
         }
       });
     } else {
@@ -397,8 +401,6 @@ async function findOrCreateUser(authData: {
       user = await db.user.update({
         where: { id: user.id },
         data: {
-          discordId: authData.discordId,
-          discordUsername: authData.name,
           // Only update these if they were empty before
           firstName: user.firstName || authData.name || authData.email.split('@')[0],
           username: user.username || `${authData.name || authData.email.split('@')[0]}`
@@ -417,10 +419,11 @@ async function findOrCreateUser(authData: {
   }
 }
 
-
-
-// Helper function to convert DatabaseUser to SupabaseUser format
-function convertToSupabaseUser(dbUser: DatabaseUser, userData: SupabaseUser): SupabaseUser {
+// Remove the second, duplicated convertToSupabaseUser and keep only one
+function convertToSupabaseUser(
+  dbUser: ExtendedDatabaseUser,
+  userData: SupabaseUser
+): SupabaseUser {
   return {
     id: dbUser.id,
     email: dbUser.email,
@@ -431,7 +434,7 @@ function convertToSupabaseUser(dbUser: DatabaseUser, userData: SupabaseUser): Su
       ...userData.user_metadata,
       discord_id: dbUser.discordId,
       name: dbUser.firstName,
-      avatar_url: dbUser.avatar || dbUser.profilePicture
+      avatar_url: dbUser.profilePicture,
     },
     aud: userData.aud,
     role: userData.role,
@@ -600,43 +603,41 @@ export async function getAuthResponseByAccessToken(accessToken: string) {
   }
 }
 
-export async function validateSession(token: string) {
-  try {
-    const t0 = performance.now();
-    const result = await db.$queryRaw<{ id: String; revoked: boolean }[]>
-    `SELECT id, revoked FROM auth.refresh_tokens 
-      WHERE token = ${token} 
-      AND revoked = false
-      LIMIT 1 `
-    ;
-    const t1 = performance.now();
+export async function validateSession(token: string | null, userId?: string) {
+  // Allow guest sessions to pass validation
+  if (userId?.startsWith('guest-')) {
+    return true;
+  }
+  
+  // Skip validation for null/empty tokens from guest sessions
+  if (!token) {
+    return false;
+  }
 
-    // eslint-disable-next-line no-console
-    console.log(`Call to validateSession took ${t1 - t0} milliseconds.`);
+  const t0 = performance.now();
+  const result = await db.$queryRaw<{ id: String; revoked: boolean }[]>`
+    SELECT id, revoked 
+    FROM auth.refresh_tokens 
+    WHERE token = ${token} 
+    AND revoked = false
+    LIMIT 1
+  `;
+  const t1 = performance.now();
+  console.log(`Call to validateSession took ${t1 - t0} milliseconds.`);
 
-    if (result.length === 0) {
-      //logging for debug
-      Logger.error(
-        new ShelfError({
-          cause: null,
-          message: "Refresh token is invalid or has been revoked",
-          label,
-          shouldBeCaptured: false,
-        })
-      );
-    }
-    return result.length > 0;
-  } catch (err) {
+  // Only log error if not a guest session
+  if (result.length === 0 && !userId?.startsWith('guest-')) {
     Logger.error(
       new ShelfError({
         cause: null,
-        message: "Something went wrong while valdiating the session",
-        label,
+        message: "Refresh token is invalid or has been revoked",
+        label: "Auth",
         shouldBeCaptured: false,
       })
     );
-    return false;
   }
+
+  return result.length > 0;
 }
 
 export async function refreshAccessToken(
@@ -739,6 +740,104 @@ export async function verifyOtpAndSignin(email: string, otp: string) {
       label,
       shouldBeCaptured,
       additionalData: { email },
+    });
+  }
+}
+
+export async function createGuestSession() {
+  const guestId = `guest-${Math.random().toString(36).substring(2)}`;
+  const ieeeOrgId = "cm6svb7av000dyozubn2k033i";
+  
+  try {
+    // First check if organization exists
+    let organization = await db.organization.findUnique({
+      where: { id: ieeeOrgId },
+      select: { id: true, userId: true }
+    });
+
+    // If org doesn't exist, create it with a system admin user
+    if (!organization) {
+      // Create a system admin user for the organization
+      const adminId = "admin-ieee";
+      const adminUser = await db.user.upsert({
+        where: { id: adminId },
+        update: {},
+        create: {
+          id: adminId,
+          email: "admin@ieee.concordia.ca",
+          username: "ieee-admin",
+          firstName: "IEEE",
+          lastName: "Admin",
+          onboarded: true,
+          tierId: "tier_2"
+        }
+      });
+
+      // Create organization owned by the admin
+      organization = await db.organization.create({
+        data: {
+          id: ieeeOrgId,
+          name: "IEEE Concordia",
+          type: "TEAM",
+          userId: adminUser.id // Set admin as owner
+        }
+      });
+
+      // Create admin's role in organization
+      await db.userOrganization.create({
+        data: {
+          userId: adminUser.id,
+          organizationId: ieeeOrgId,
+          roles: [OrganizationRoles.ADMIN]
+        }
+      });
+    }
+
+    // Create guest user in a transaction to ensure consistency
+    const guestUser = await db.$transaction(async (tx) => {
+      // 1. First create the user
+      const user = await tx.user.create({
+        data: {
+          id: guestId,
+          email: `${guestId}@guest.ieee.concordia.ca`,
+          username: `guest-${guestId}`,
+          firstName: "Guest",
+          lastName: "User",
+          onboarded: true,
+          tierId: "tier_2",
+        }
+      });
+      
+      // 2. Then create the user-organization relationship
+      await tx.userOrganization.create({
+        data: {
+          userId: user.id,
+          organizationId: ieeeOrgId,
+          roles: [OrganizationRoles.BASE]
+        }
+      });
+      
+      return user;
+    });
+
+    return {
+      userId: guestId,
+      accessToken: null,
+      refreshToken: null,
+      expiresIn: 86400,
+      expiresAt: Date.now() + 86400 * 1000,
+      email: guestUser.email
+    };
+  } catch (cause: any) {
+    console.error("Error creating guest session:", cause);
+    if (cause.code === "P1001") {
+      console.error("Database unreachable while creating guest session:", cause);
+      return null;
+    }
+    throw new ShelfError({
+      cause,
+      message: "Failed to create guest session",
+      label: "Auth"
     });
   }
 }

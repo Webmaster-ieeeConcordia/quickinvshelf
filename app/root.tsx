@@ -33,6 +33,12 @@ import { data } from "./utils/http.server";
 import { useNonce } from "./utils/nonce-provider";
 import { PwaManagerProvider } from "./utils/pwa-manager";
 import { splashScreenLinks } from "./utils/splash-screen-links";
+import { Toaster } from "~/components/shared/toast";
+import { createGuestSession } from "~/modules/auth/service.server";
+import { setSelectedOrganizationIdCookie } from "~/modules/organization/context.server";
+import { setCookie } from "~/utils/cookies.server";
+import { db } from "~/database/db.server";
+import { makeShelfError } from "~/utils/error";
 
 export interface RootData {
   env: typeof getBrowserEnv;
@@ -61,16 +67,75 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-export const loader = ({ request }: LoaderFunctionArgs) =>
-  json(
-    data({
-      env: getBrowserEnv(),
-      maintenanceMode: false,
-      requestInfo: {
-        hints: getClientHint(request),
-      },
-    })
-  );
+export const loader = async ({ context, request }: LoaderFunctionArgs) => {
+  try {
+    if (!context.isAuthenticated) {
+      const guestSession = await createGuestSession();
+      if (guestSession) {
+        context.setSession({
+          ...guestSession,
+          accessToken: guestSession.accessToken || "defaultAccessToken",
+          refreshToken: guestSession.refreshToken || "defaultRefreshToken",
+        });
+        const guestUser = await db.user.findUnique({
+          where: { id: guestSession.userId },
+          include: { organizations: true }
+        });
+        const orgId = guestUser?.organizations[0]?.id;
+        return json(
+          data({ 
+            isGuest: true,
+            maintenanceMode: false,
+            env: getBrowserEnv()
+          }), 
+          { headers: [setCookie(await setSelectedOrganizationIdCookie(orgId || ""))] }
+        );
+      } else {
+        // DB unreachable: return guest info without session creation
+        console.error("Guest session creation failed; proceeding as guest with limited features.");
+        return json(
+          data({
+            maintenanceMode: false,
+            guestError: "Could not create a guest session. Please login to get full access.",
+            env: getBrowserEnv()
+          })
+        );
+      }
+    }
+
+    try {
+      // Attempt to get user data
+      return json(data({ 
+        isGuest: false, 
+        maintenanceMode: false, 
+        env: getBrowserEnv() 
+      }));
+    } catch (userError) {
+      // If user data can't be found, create a new guest session
+      console.log("[DEBUG] User data not found, creating new guest session");
+      const newGuestSession = await createGuestSession();
+      if (newGuestSession) {
+        context.setSession({
+          ...newGuestSession,
+          accessToken: newGuestSession.accessToken || "defaultAccessToken",
+          refreshToken: newGuestSession.refreshToken || "defaultRefreshToken",
+        });
+        return json(data({ 
+          isGuest: true,
+          maintenanceMode: false,
+          env: getBrowserEnv()
+        }));
+      }
+    }
+
+    // If all else fails, return error
+    throw new Error("Could not create guest session or find user data");
+
+  } catch (cause) {
+    const reason = makeShelfError(cause, { userId: context.getSession().userId });
+    throw json(Error(reason.message), { status: reason.status });
+  }
+};
 
 export const shouldRevalidate = () => false;
 
@@ -97,9 +162,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <noscript>
           <BlockInteractions
-            title="JavaScript is disabled"
-            content="This website requires JavaScript to be enabled to function properly. Please enable JavaScript or change browser and try again."
-            icon="x"
+        title="JavaScript is disabled"
+        content="This website requires JavaScript to be enabled to function properly. Please enable JavaScript or change browser and try again."
+        icon="x"
           />
         </noscript>
 
@@ -107,16 +172,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
           children
         ) : (
           <BlockInteractions
-            title="Cookies are disabled"
-            content="This website requires cookies to be enabled to function properly. Please enable cookies and try again."
-            icon="x"
+        title="Cookies are disabled"
+        content="This website requires cookies to be enabled to function properly. Please enable cookies and try again."
+        icon="x"
           />
         )}
 
         <ScrollRestoration />
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.env = ${JSON.stringify(data?.env)}`,
+        __html: `window.env = ${JSON.stringify(getBrowserEnv())}`,
           }}
         />
         <Scripts />
@@ -143,7 +208,10 @@ function App() {
     />
   ) : (
     <PwaManagerProvider>
-      <Outlet />
+      <div>
+        <Outlet />
+        <Toaster />
+      </div>
     </PwaManagerProvider>
   );
 }

@@ -1,97 +1,86 @@
 import type { SsoDetails } from "@prisma/client";
-import { OrganizationRoles, Roles } from "@prisma/client";
+import { Organization, OrganizationRoles, Roles, UserOrganization } from "@prisma/client";
 import { db } from "~/database/db.server";
 import { getSelectedOrganisation } from "~/modules/organization/context.server";
 import { ShelfError } from "./error";
-import type {
-  PermissionAction,
-  PermissionEntity,
-} from "./permissions/permission.data";
+import type { PermissionAction, PermissionEntity } from "./permissions/permission.data";
 import { validatePermission } from "./permissions/permission.validator.server";
 
-export async function requireUserWithPermission(name: Roles, userId: string) {
-  try {
-    return await db.user.findFirstOrThrow({
-      where: { id: userId, roles: { some: { name } } },
-    });
-  } catch (cause) {
-    throw new ShelfError({
-      cause,
-      message: "You do not have permission to access this resource",
-      additionalData: { userId, name },
-      label: "Permission",
-      status: 403,
-    });
-  }
-}
-
-export async function requireAdmin(userId: string) {
-  return requireUserWithPermission(Roles["ADMIN"], userId);
-}
-
-export async function isAdmin(context: Record<string, any>) {
-  const authSession = context.getSession();
-
-  const user = await db.user.findFirst({
-    where: {
-      id: authSession.userId,
-      roles: { some: { name: Roles["ADMIN"] } },
-    },
-  });
-
-  return !!user;
-}
-
-export async function requirePermission({
-  userId,
-  request,
-  entity,
-  action,
-}: {
+// Define interfaces for the different parameter types
+interface AsyncPermissionParams {
   userId: string;
   request: Request;
   entity: PermissionEntity;
   action: PermissionAction;
-}) {
-  /**
-   * This can be very slow and consuming as there are a few queries with a few joins and this running on every loader/action makes it slow
-   * We need to find a  strategy to make it more performant. Idea:
-   * 1. Have a very light weight query that fetches the lastUpdated in relation to userOrganizationRoles. THis can be done both for roles and organizations
-   * 2. Store it in a cookie
-   * 3. If they mismatch, make the big query to check the actual data
-   */
+}
 
-  const {
-    organizationId,
-    userOrganizations,
-    organizations,
-    currentOrganization,
-  } = await getSelectedOrganisation({ userId, request });
+interface RequirePermissionReturn {
+  organizations: Organization[];
+  organizationId: string;
+  currentOrganization: Organization;
+  role: OrganizationRoles;
+  isSelfServiceOrBase: boolean;
+  userOrganizations: UserOrganization[];
+}
 
-  const roles = userOrganizations.find(
-    (o) => o.organization.id === organizationId
-  )?.roles;
+// Overload signatures
+export function requirePermission(params: AsyncPermissionParams): Promise<RequirePermissionReturn>;
+export function requirePermission(userPermissions: string[] | undefined, requiredPermission: string): boolean;
 
-  await validatePermission({
-    roles,
-    action,
-    entity,
-    organizationId,
-    userId,
-  });
+// Implementation
+export function requirePermission(
+  paramsOrPermissions: AsyncPermissionParams | string[] | undefined,
+  requiredPermission?: string
+): Promise<RequirePermissionReturn> | boolean {
+  // Check if first argument matches async params shape
+  if (paramsOrPermissions && typeof paramsOrPermissions === 'object' && 'userId' in paramsOrPermissions) {
+    // Async version
+    const params = paramsOrPermissions as AsyncPermissionParams;
+    return (async () => {
+      const { organizationId, userOrganizations, organizations, currentOrganization } =
+        await getSelectedOrganisation({ userId: params.userId, request: params.request });
 
-  const role = roles ? roles[0] : OrganizationRoles.BASE;
+      const mappedUserOrganizations = userOrganizations.map((uo) => ({
+        id: uo.organization.id,
+        userId: uo.organization.userId,
+        createdAt: uo.organization.createdAt,
+        updatedAt: uo.organization.updatedAt,
+        organizationId: uo.organization.id,
+        roles: uo.roles,
+      }));
 
-  return {
-    organizations,
-    organizationId,
-    currentOrganization,
-    role,
-    isSelfServiceOrBase:
-      role === OrganizationRoles.SELF_SERVICE ||
-      role === OrganizationRoles.BASE,
-    userOrganizations,
-  };
+      const roles = mappedUserOrganizations.find(
+        (uo) => uo.organizationId === organizationId
+      )?.roles;
+
+      await validatePermission({
+        roles,
+        action: params.action,
+        entity: params.entity,
+        organizationId,
+        userId: params.userId,
+      });
+
+      const role = roles ? roles[0] : OrganizationRoles.BASE;
+
+      return {
+        organizations,
+        organizationId,
+        currentOrganization,
+        role,
+        isSelfServiceOrBase: role === OrganizationRoles.SELF_SERVICE || role === OrganizationRoles.BASE,
+        userOrganizations: mappedUserOrganizations,
+      };
+    })();
+  }
+
+  // Sync version
+  if (typeof requiredPermission === 'string') {
+    const permissions = paramsOrPermissions as string[] ?? [];
+    return permissions.includes(requiredPermission);
+  }
+
+  throw new Error('Invalid parameters passed to requirePermission');
 }
 
 /** Gets the role needed for SSO login from the groupID returned by the SSO claims */
@@ -122,4 +111,37 @@ export function getRoleFromGroupId(
       additionalData: { ssoDetails, groupIds },
     });
   }
+}
+
+export async function requireOrgRole(
+  userId: string,
+  organizationId: string,
+  roles: OrganizationRoles[]
+): Promise<UserOrganization> {
+  const userOrganization = await db.userOrganization.findFirst({
+    where: {
+      userId,
+      organizationId,
+    },
+  });
+
+  if (!userOrganization) {
+    throw new ShelfError({
+      cause: null,
+      message: "User not found in organization",
+      label: "Permission",
+      status: 403,
+    });
+  }
+
+  if (!roles.some((role) => userOrganization.roles.includes(role))) {
+    throw new ShelfError({
+      cause: null,
+      message: "Insufficient permissions",
+      label: "Permission",
+      status: 403,
+    });
+  }
+
+  return userOrganization;
 }

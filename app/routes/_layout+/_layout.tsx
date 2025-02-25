@@ -35,7 +35,7 @@ import {
   setCookie,
   userPrefs,
 } from "~/utils/cookies.server";
-import { makeShelfError } from "~/utils/error";
+import { makeShelfError, ShelfError } from "~/utils/error";
 import { data, error } from "~/utils/http.server";
 import type { CustomerWithSubscriptions } from "~/utils/stripe.server";
 
@@ -47,16 +47,64 @@ import {
 } from "~/utils/stripe.server";
 import { canUseBookings } from "~/utils/subscription.server";
 import { tw } from "~/utils/tw";
+import { createGuestSession } from "~/modules/auth/service.server";
+import type { GuestSession, CustomContext } from "~/modules/auth/types";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export type LayoutLoaderResponse = typeof loader;
 
-export async function loader({ context, request }: LoaderFunctionArgs) {
+export async function loader({ 
+  context,
+  request,
+  params 
+}: LoaderFunctionArgs & { context: CustomContext }) {
   const authSession = context.getSession();
   const { userId } = authSession;
 
   try {
+    // Handle guest session first - special case
+    if (userId?.startsWith('guest-')) {
+      try {
+        const user = await getUserByID(userId, {
+          roles: true,
+          organizations: {
+            select: {
+              id: true,
+              name: true,
+              type: true,
+              imageId: true,
+            },
+          },
+          userOrganizations: {
+            where: {
+              userId,
+            },
+            select: {
+              id: true,
+              organization: true,
+              roles: true,
+            },
+          },
+        });
+        
+        // Continue with regular flow for guests
+        // ...same code as for regular users...
+      } catch (guestError) {
+        // If error has status 401, create new guest session
+        if (guestError instanceof ShelfError && guestError.status === 401) {
+          console.log("[DEBUG] Creating new guest session due to expired guest");
+          const guestSession = await createGuestSession();
+          if (guestSession) {
+            context.setSession(guestSession);
+            return loader({ context, request, params });
+          }
+        }
+        throw guestError; // Re-throw if not a 401 or if creating new session failed
+      }
+    }
+    
+    // Regular user handling
     const user = await getUserByID(userId, {
       roles: true,
       organizations: {
@@ -69,7 +117,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       },
       userOrganizations: {
         where: {
-          userId: authSession.userId,
+          userId,
         },
         select: {
           id: true,
@@ -131,12 +179,23 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
               organizations,
               url: request.url,
             }),
+        isGuest: !authSession.userId, // Add guest flag
       }),
       {
         headers: [setCookie(await userPrefs.serialize(userPrefsCookie))],
       }
     );
   } catch (cause) {
+    // If user not found and not a guest, create guest session
+    if (!userId?.startsWith('guest-')) {
+      console.log("[DEBUG] User not found, creating guest session");
+      const guestSession = await createGuestSession();
+      if (guestSession) {
+        context.setSession(guestSession);
+        return loader({ context, request, params });
+      }
+    }
+    
     const reason = makeShelfError(cause, { userId: authSession.userId });
     throw json(error(reason), { status: reason.status });
   }
@@ -150,7 +209,7 @@ export const meta: MetaFunction<typeof loader> = ({ error }) => [
 
 export default function App() {
   useCrisp();
-  const { disabledTeamOrg, minimizedSidebar } = useLoaderData<typeof loader>();
+  const { disabledTeamOrg, minimizedSidebar, isGuest } = useLoaderData<typeof loader>();
   const workspaceSwitching = useAtomValue(switchingWorkspaceAtom);
 
   const renderInstallPwaPromptOnMobile = () =>
@@ -190,6 +249,12 @@ export default function App() {
                 >
                   <ScanBarcodeIcon />
                 </NavLink>
+                {/* Show login button only when user is guest */}
+                {isGuest && (
+                  <Link to="/auth/login" className="px-3 py-1 text-sm text-blue-600 hover:underline">
+                    Login
+                  </Link>
+                )}
                 <SidebarTrigger />
               </div>
             </header>

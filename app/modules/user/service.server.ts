@@ -16,6 +16,7 @@ import {
   createEmailAuthAccount,
   signInWithEmail,
   updateAccountPassword,
+  createGuestSession,
 } from "~/modules/auth/service.server";
 
 import { dateTimeInUnix } from "~/utils/date-time-in-unix";
@@ -51,6 +52,42 @@ export async function getUserByID<T extends Prisma.UserInclude | undefined>(
   include?: T
 ): Promise<UserWithInclude<T>> {
   try {
+    // Special case for guest users
+    if (id?.startsWith('guest-')) {
+      // Try to find the user
+      const user = await db.user.findUnique({
+        where: { id },
+        include: { ...include },
+      });
+      
+      // If the guest user doesn't exist, create a new guest session
+      if (!user) {
+        console.log(`[DEBUG] Guest user ${id} not found, creating new guest session`);
+        const guestSession = await createGuestSession();
+        if (guestSession) {
+          // Then try to find the newly created user
+          const newUser = await db.user.findUnique({
+            where: { id: guestSession.userId },
+            include: { ...include },
+          });
+          
+          if (newUser) {
+            return newUser as UserWithInclude<T>;
+          }
+        }
+        throw new ShelfError({
+          cause: null,
+          title: "Guest user creation failed",
+          message: "Failed to create a new guest user. Please try again.",
+          additionalData: { id },
+          label: "User",
+        });
+      }
+      
+      return user as UserWithInclude<T>;
+    }
+    
+    // Regular user lookup
     const user = await db.user.findUniqueOrThrow({
       where: { id },
       include: { ...include },
@@ -58,25 +95,25 @@ export async function getUserByID<T extends Prisma.UserInclude | undefined>(
 
     return user as UserWithInclude<T>;
   } catch (cause) {
+    // For guest users that failed both original lookup and recreation attempt
+    if (id?.startsWith('guest-')) {
+      throw new ShelfError({
+        cause,
+        title: "Guest session expired",
+        message: "Your guest session has expired. We'll create a new one for you.",
+        additionalData: { id, include },
+        label: "User",
+        status: 401, // Use 401 to trigger a new guest session
+      });
+    }
+    
     throw new ShelfError({
       cause,
       title: "User not found",
       message: "The user you are trying to access does not exist.",
-      additionalData: { id, include },
-      label,
-    });
-  }
-}
-
-export async function findUserByEmail(email: User["email"]) {
-  try {
-    return await db.user.findUnique({ where: { email: email.toLowerCase() } });
-  } catch (cause) {
-    throw new ShelfError({
-      cause,
-      message: "Failed to find user",
-      additionalData: { email },
-      label,
+      additionalData: { id, include, userId: id },
+      label: "User",
+      status: 404,
     });
   }
 }

@@ -1,12 +1,8 @@
-import { OrganizationRoles } from "@prisma/client";
+import type { OrganizationRoles } from "@prisma/client";
 import { db } from "~/database/db.server";
-
-import {
-  Role2PermissionMap,
-  type PermissionAction,
-  type PermissionEntity,
-} from "./permission.data";
-import { ShelfError } from "../error";
+import { ShelfError } from "~/utils/error";
+import type { PermissionAction, PermissionEntity } from "./permission.data";
+import { permissions } from "./permission.data";
 
 export interface PermissionCheckProps {
   organizationId: string;
@@ -16,74 +12,64 @@ export interface PermissionCheckProps {
   entity: PermissionEntity;
 }
 
-export async function hasPermission(
-  params: PermissionCheckProps
-): Promise<Boolean> {
-  let { userId, entity, action, organizationId, roles } = params;
-
-  try {
-    if (!roles || !Array.isArray(roles)) {
-      const userOrg = await db.userOrganization.findFirst({
-        where: { userId, organizationId },
-      });
-
-      if (!userOrg) {
-        throw new ShelfError({
-          cause: null,
-          message: `User doesn't belong to organization`,
-          status: 403,
-          additionalData: { userId, organizationId },
-          label: "Permission",
-        });
-      }
-
-      roles = userOrg.roles;
-    }
-
-    if (
-      roles.includes(OrganizationRoles.ADMIN) ||
-      roles.includes(OrganizationRoles.OWNER)
-    ) {
-      //owner and admin can do anything for now
-      return true;
-    }
-
-    const validRoles = roles.filter((role) => {
-      const entityPermMap = Role2PermissionMap[role];
-
-      if (!entityPermMap) {
-        return false;
-      }
-
-      const permissions = entityPermMap[entity];
-
-      return permissions.includes(action);
-    });
-
-    return validRoles.length > 0;
-  } catch (cause) {
+export async function validatePermission({
+  roles,
+  action,
+  entity,
+  organizationId,
+  userId,
+}: {
+  roles?: OrganizationRoles[];
+  action: PermissionAction;
+  entity: PermissionEntity;
+  organizationId: string;
+  userId: string;
+}) {
+  if (!roles?.length) {
     throw new ShelfError({
-      cause,
-      message: "Error while checking permission",
-      additionalData: { ...params },
+      cause: null,
+      message: "You have no permission to perform this action",
       label: "Permission",
+      title: "Unauthorized",
+      status: 403,
+      additionalData: { roles, action, entity, organizationId, userId },
+      shouldBeCaptured: false,
+    });
+  }
+
+  const allowedRoles = permissions[entity][action];
+  const hasPermission = roles.some((role) => allowedRoles.includes(role));
+
+  if (!hasPermission) {
+    throw new ShelfError({
+      cause: null,
+      message: "You have no permission to perform this action",
+      label: "Permission",
+      title: "Unauthorized",
+      status: 403,
+      additionalData: { roles, action, entity, organizationId, userId },
+      shouldBeCaptured: false,
     });
   }
 }
 
-export const validatePermission = async (props: PermissionCheckProps) => {
-  const res = await hasPermission(props);
-
-  if (!res) {
-    throw new ShelfError({
-      cause: null,
-      title: "Unauthorized",
-      message: `You have no permission to perform this action`,
-      additionalData: { ...props },
-      status: 403,
-      label: "Permission",
-      shouldBeCaptured: false,
-    });
+export async function hasPermission({
+  roles,
+  action,
+  entity,
+  organizationId,
+  userId,
+}: {
+  roles?: OrganizationRoles[];
+  action: PermissionAction;
+  entity: PermissionEntity;
+  organizationId: string;
+  userId: string;
+}) {
+  try {
+    await validatePermission({ roles, action, entity, organizationId, userId });
+    return true;
+  } catch {
+    return false;
   }
-  return true;
-};
+}

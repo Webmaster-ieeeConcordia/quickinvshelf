@@ -1,6 +1,7 @@
 import { createMiddleware } from "hono/factory";
 import { pathToRegexp } from "path-to-regexp";
 import { getSession } from "remix-hono/session";
+import { createGuestSession } from "~/modules/auth/service.server";
 
 import {
   refreshAccessToken,
@@ -28,24 +29,30 @@ export function protect({
 }) {
   return createMiddleware(async (c, next) => {
     const isPublic = pathMatch(publicPaths, c.req.path);
+    if (isPublic) return next();
 
-    if (isPublic) {
-      return next();
-    }
     //@ts-expect-error fixed soon
     const session = getSession<SessionData, FlashData>(c);
     const auth = session.get(authSessionKey);
 
+    // If there is no auth session at all
     if (!auth) {
-      session.flash(
-        "errorMessage",
-        "This content is only available to logged in users."
-      );
-
+      const guestSession = await createGuestSession();
+      if (guestSession) {
+        session.set(authSessionKey, guestSession);
+        return next();
+      }
+      // If guest session creation failed, redirect to login
       return c.redirect(`${onFailRedirectTo}?redirectTo=${c.req.path}`);
     }
-    let isValidSession = await validateSession(auth.refreshToken);
 
+    // For guest sessions, identified by userId starting with 'guest-'
+    if (auth.userId?.startsWith('guest-')) {
+      return next();
+    }
+
+    // For regular sessions, validate the refresh token
+    const isValidSession = await validateSession(auth.refreshToken, auth.userId);
     if (!isValidSession) {
       session.flash(
         "errorMessage",
@@ -62,8 +69,44 @@ export function protect({
       );
       return c.redirect(`${onFailRedirectTo}?redirectTo=${c.req.path}`);
     }
+
+    // Only check Discord role for non-guest authenticated users
+    if (!auth.userId?.startsWith('guest-')) {
+      const hasValidRole = await validateDiscordRole(auth.accessToken);
+      if (!hasValidRole) {
+        session.flash(
+          "errorMessage",
+          "You must be an IEEE Concordia exec to access this content."
+        );
+        session.unset(authSessionKey);
+        return c.redirect(onFailRedirectTo);
+      }
+    }
+
     return next();
   });
+}
+
+async function validateDiscordRole(accessToken: string): Promise<boolean> {
+  try {
+    const guildId = process.env.DISCORD_GUILD_ID;
+    const response = await fetch(
+      `https://discord.com/api/users/@me/guilds/${guildId}/member`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    if (!response.ok) return false;
+
+    const data = await response.json();
+    return data.roles.includes(process.env.DISCORD_EXEC_ROLE_ID);
+  } catch (error) {
+    console.error("Discord role validation failed:", error);
+    return false;
+  }
 }
 
 function pathMatch(paths: string[], requestPath: string) {
@@ -95,20 +138,20 @@ export function refreshSession() {
     //@ts-expect-error fixed soon
     const session = getSession<SessionData, FlashData>(c);
     const auth = session.get(authSessionKey);
-
-    if (!auth || !isExpiringSoon(auth.expiresAt)) {
+    
+    // Skip refresh for guest sessions or no auth
+    if (!auth || auth.userId?.startsWith('guest-')) {
       return next();
     }
 
-    try {
-      session.set(authSessionKey, await refreshAccessToken(auth.refreshToken));
-    } catch (cause) {
-      session.flash(
-        "errorMessage",
-        "You have been logged out. Please log in again."
-      );
-
-      session.unset(authSessionKey);
+    // Only try to refresh if we have a refresh token and it's expiring soon
+    if (auth.refreshToken && isExpiringSoon(auth.expiresAt)) {
+      try {
+        session.set(authSessionKey, await refreshAccessToken(auth.refreshToken));
+      } catch (cause) {
+        session.flash("errorMessage", "You have been logged out. Please log in again.");
+        session.unset(authSessionKey);
+      }
     }
 
     return next();

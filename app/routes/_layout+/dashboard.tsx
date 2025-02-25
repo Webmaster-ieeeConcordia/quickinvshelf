@@ -55,6 +55,29 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       action: PermissionAction.read,
     });
 
+    // Add special handling for guest users
+    const isGuest = userId.startsWith('guest-');
+    if (isGuest) {
+      // Return limited dashboard data for guests
+      return json(data({
+        assets: [],
+        locale: getLocale(request),
+        currency: currentOrganization?.currency,
+        totalValuation: 0,
+        newAssets: [],
+        totalAssets: 0,
+        skipOnboardingChecklist: true,
+        custodiansData: [],
+        mostScannedAssets: [],
+        mostScannedCategories: [],
+        totalAssetsAtEndOfEachMonth: [],
+        assetsByStatus: {},
+        assetsByCategory: {},
+        announcement: null,
+        checklistOptions: { completed: [], incomplete: [] }
+      }));
+    }
+
     /** This should be updated to use select to only get the data we need */
     const assets = await db.asset
       .findMany({

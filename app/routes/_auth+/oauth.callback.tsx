@@ -61,7 +61,18 @@ export const action: ActionFunction = async ({ request, context }) => {
     }
 
     const discordUserId = authSession.user.user_metadata.sub;
-    console.log(discordUserId);
+    const discordToken = access_token;
+
+    // Check if user has exec role
+    const hasExecRole = await checkDiscordExecRole(discordToken);
+    if (!hasExecRole) {
+      throw new ShelfError({
+        cause: new Error("User does not have required Discord role"),
+        message: "You must be an IEEE Concordia exec to access this application",
+        label: "OAuthCallback", 
+        status: 403
+      });
+    }
 
     let user = await findUserByEmail(authSession.user.email);
 
@@ -131,6 +142,30 @@ export const action: ActionFunction = async ({ request, context }) => {
   }
 };
 
+async function checkDiscordExecRole(accessToken: string): Promise<boolean> {
+  try {
+    // Get user's Discord guild member info
+    const guildId = process.env.DISCORD_GUILD_ID; // Add to .env
+    const response = await fetch(
+      `https://discord.com/api/users/@me/guilds/${guildId}/member`, 
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Discord roles');
+    }
+
+    const data = await response.json();
+    return data.roles.includes("1239606005889761412"); // Exec role ID
+  } catch (error) {
+    console.error("Discord role check failed:", error);
+    return false;
+  }
+}
 
 export default function OAuthCallbackPage() {
   const fetcher = useFetcher<OAuthCallbackResponse>();

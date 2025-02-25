@@ -10,6 +10,7 @@ import { renderToPipeableStream } from "react-dom/server";
 import { registerEmailWorkers } from "./emails/email.worker.server";
 import { regierAssetWorkers } from "./modules/asset-reminder/worker.server";
 import { registerBookingWorkers } from "./modules/booking/worker.server";
+import { registerGuestCleanupWorker } from "./modules/auth/guest-cleanup.worker";
 import { ShelfError } from "./utils/error";
 import { Logger } from "./utils/logger";
 import * as schedulerService from "./utils/scheduler.server";
@@ -19,48 +20,42 @@ export * from "../server";
 schedulerService
   .init()
   .then(async () => {
-    await registerBookingWorkers().catch((cause) => {
-      Logger.error(
-        new ShelfError({
-          cause,
-          message: "Something went wrong while registering booking workers.",
-          label: "Scheduler",
-        })
-      );
-    });
+    console.log("[DEBUG] Starting worker initialization...");
 
-    await regierAssetWorkers().catch((cause) => {
-      Logger.error(
-        new ShelfError({
-          cause,
-          message: "Something went wrong while registering asset workers.",
-          label: "Scheduler",
-        })
-      );
-    });
+    try {
+      console.log("[DEBUG] About to register guest cleanup worker");
+      await registerGuestCleanupWorker();
+      console.log("[DEBUG] Guest cleanup worker registration completed");
 
-    await registerEmailWorkers().catch((cause) => {
+      // Register other workers after guest cleanup
+      await Promise.all([
+        registerBookingWorkers().catch(e => {
+          console.error("[DEBUG] Booking worker failed:", e);
+          throw e;
+        }),
+        regierAssetWorkers().catch(e => {
+          console.error("[DEBUG] Asset worker failed:", e);
+          throw e;
+        }),
+        registerEmailWorkers().catch(e => {
+          console.error("[DEBUG] Email worker failed:", e);
+          throw e;
+        })
+      ]);
+
+    } catch (error) {
+      console.error("[DEBUG] Worker registration failed:", error);
       Logger.error(
         new ShelfError({
-          cause,
-          message: "Something went wrong while registering email workers.",
-          label: "Scheduler",
+          cause: error,
+          message: "Failed to register workers",
+          label: "Scheduler"
         })
       );
-    });
+    }
   })
   .finally(() => {
-    // eslint-disable-next-line no-console
-    console.log("Scheduler and workers registration completed");
-  })
-  .catch((cause) => {
-    Logger.error(
-      new ShelfError({
-        cause,
-        message: "Scheduler crash",
-        label: "Scheduler",
-      })
-    );
+    console.log("[DEBUG] Scheduler initialization complete");
   });
 // === end: register scheduler and workers ===
 
