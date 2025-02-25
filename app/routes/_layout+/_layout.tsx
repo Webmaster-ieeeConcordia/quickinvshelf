@@ -49,6 +49,7 @@ import { canUseBookings } from "~/utils/subscription.server";
 import { tw } from "~/utils/tw";
 import { createGuestSession } from "~/modules/auth/service.server";
 import type { GuestSession, CustomContext } from "~/modules/auth/types";
+import { DiscordLogoIcon } from "~/components/icons/library";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -249,15 +250,36 @@ export default function App() {
                 >
                   <ScanBarcodeIcon />
                 </NavLink>
-                {/* Show login button only when user is guest */}
+                {/* Show Discord login button for guest users */}
                 {isGuest && (
-                  <Link to="/auth/login" className="px-3 py-1 text-sm text-blue-600 hover:underline">
-                    Login
-                  </Link>
+                  <NavLink
+                    to="/auth/discord"
+                    className="ml-2 flex items-center gap-1 rounded-md bg-[#5865F2] px-3 py-1 text-sm font-medium text-white shadow-sm hover:bg-[#4a57e0] focus:outline-none"
+                  >
+                    <DiscordLogoIcon className="h-4 w-4" />
+                    <span>Login</span>
+                  </NavLink>
                 )}
                 <SidebarTrigger />
               </div>
             </header>
+            
+            {/* Add banner for guest users on desktop */}
+            {isGuest && (
+              <div className="hidden border-b bg-gray-50 px-6 py-2 md:flex md:justify-between md:items-center">
+                <p className="text-sm text-gray-600">
+                  You're browsing as a guest. Login to save your changes and access all features.
+                </p>
+                <Link 
+                  to="/auth/discord" 
+                  className="ml-4 flex items-center gap-1 whitespace-nowrap rounded-md bg-[#5865F2] px-3 py-1 text-sm font-medium text-white shadow-sm hover:bg-[#4a57e0] focus:outline-none"
+                >
+                  <DiscordLogoIcon className="h-4 w-4" />
+                  <span>Login with Discord</span>
+                </Link>
+              </div>
+            )}
+            
             <Outlet />
           </>
         )}
