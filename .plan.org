@@ -1,0 +1,69 @@
+* <2025-02-25 Tue>
+** Thoughts
+*** TODO move inventoryitem stuff to assets table
+- [ ] organizationId keeps getting generated- make a single one for all
+- [ ] add field to Asset in schema.prisma
+  - this makes it so that it's easier to create new fields. if it breaks, good
+
+** InventoryItem
+*** Column
+Each inventory item contains the following fields:
+|--------------+-------------+-----------------------|
+| Field        | Type        | Notes                 |
+|--------------+-------------+-----------------------|
+| id           | text (pk)   |                       |
+| name         | text        | rename to title       |
+| notes        | text        | rename to description |
+| quantity     | int4        |                       |
+| userId       | text (fk)   |                       |
+| created time | timestamptz | move to createdAt     |
+| location     | text        |                       |
+| bin          | text        | remove                |
+| tags         | text        |                       |
+| links & docs | text        |                       |
+| bins         | text        | remove                |
+| date         | date        | remove                |
+|--------------+-------------+-----------------------|
+
+** Assets
+*** Columns Before
+  |---------------------+-------------+---------------------------|
+  | Field               | Type        | Notes                     |
+  |---------------------+-------------+---------------------------|
+  | id                  | text (pk)   |                           |
+  | title               | text        |                           |
+  | description         | text        |                           |
+  | createdAt           | timestamp   | might change this to tz   |
+  | updatedAt           | timestamp   | keep                      |
+  | userId              | text (fk)   |                           |
+  | mainImage           | text        |                           |
+  | mainImageExpiration | timestamp   |                           |
+  | categoryId          | text (fk)   | want to use in the future |
+  | locationId          | text (fk)   | want to use in the future |
+  | organizationId      | text (fk)   | want to use in the future |
+  | status              | AssetStatus |                           |
+  | value               | float8      | seems to be money         |
+  | availableToBook     | bool        |                           |
+  | kitId               | text (fk)   |                           |
+  |---------------------+-------------+---------------------------|
+
+*** Columns After
+  |---------------------+-------------+-------------------|
+  | Field               | Type        | Notes             |
+  |---------------------+-------------+-------------------|
+  | id                  | text (pk)   |                   |
+  | title               | text        |                   |
+  | description         | text        |                   |
+  | createdAt           | timestamp   |                   |
+  | updatedAt           | timestamp   |                   |
+  | userId              | text (fk)   |                   |
+  | mainImage           | text        |                   |
+  | mainImageExpiration | timestamp   |                   |
+  | categoryId          | text (fk)   |                   |
+  | locationId          | text (fk)   |                   |
+  | organizationId      | text (fk)   |                   |
+  | status              | AssetStatus |                   |
+  | value               | float8      | seems to be money |
+  | availableToBook     | bool        |                   |
+  | kitId               | text (fk)   |                   |
+  |---------------------+-------------+-------------------|
