@@ -62,7 +62,7 @@ import { checkExhaustiveSwitch } from "~/utils/check-exhaustive-switch";
 
 import { sendNotification } from "~/utils/emitter/send-notification.server";
 import { ShelfError, makeShelfError } from "~/utils/error";
-import { data, error, parseData } from "~/utils/http.server";
+import { data, error, parseData, safeRedirect } from "~/utils/http.server";
 import {
   PermissionAction,
   PermissionEntity,
@@ -71,6 +71,16 @@ import { userHasPermission } from "~/utils/permissions/permission.validator.clie
 import { requirePermission } from "~/utils/roles.server";
 import { tw } from "~/utils/tw";
 import { resolveTeamMemberName } from "~/utils/user";
+import { createGuestSession } from "~/modules/auth/service.server";
+import type { GuestSession, ExtendedOrganization, CustomContext } from "~/modules/auth/types";
+
+interface AssetLoaderData {
+  header: {
+    title: string;
+  };
+  items: any[];
+  canImportAssets: boolean;
+}
 
 export type AssetIndexLoaderData = typeof loader;
 
@@ -78,47 +88,90 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: assetCss },
 ];
 
-export async function loader({ context, request }: LoaderFunctionArgs) {
+export async function loader({ 
+  context,
+  request,
+  params 
+}: LoaderFunctionArgs & { context: CustomContext }) {
   const authSession = context.getSession();
+  console.log("[DEBUG] Auth session in assets loader:", {
+    userId: authSession.userId,
+    email: authSession.email,
+    searchParams: new URL(request.url).searchParams.toString()
+  });
+  
   const { userId } = authSession;
+
   try {
-    /** Validate permissions and fetch user */
-    const [{ organizationId, organizations, currentOrganization, role }, user] =
+    // Special handling for guest users
+    if (userId?.startsWith('guest-')) {
+      // Check if the guest user exists before proceeding
+      const guestUser = await db.user.findUnique({
+        where: { id: userId },
+        select: { id: true }
+      });
+      
+      if (!guestUser) {
+        console.log(`[DEBUG] Guest user ${userId} not found, creating new guest session in assets`);
+        const guestSession = await createGuestSession();
+        if (guestSession) {
+          context.setSession(guestSession);
+          // Redirect to self to use the new session
+          return safeRedirect(`/assets${new URL(request.url).search}`);
+        }
+      }
+    }
+    
+    // Get organization permission first
+    const { organizationId: permOrgId } = await requirePermission({
+      userId,
+      request,
+      entity: PermissionEntity.asset,
+      action: PermissionAction.read,
+    });
+
+    // Then use it for the rest of the operations with proper typing
+    const [{ organizations, currentOrganization, role }, user] =
       await Promise.all([
         requirePermission({
           userId,
           request,
           entity: PermissionEntity.asset,
           action: PermissionAction.read,
-        }),
+        }).then(result => ({
+          ...result,
+          organizations: result.organizations as ExtendedOrganization[],
+          currentOrganization: result.currentOrganization as ExtendedOrganization
+        })),
+        // Use findUnique instead of findUniqueOrThrow for better guest handling
         db.user
-          .findUniqueOrThrow({
-            where: {
-              id: userId,
-            },
+          .findUnique({
+            where: { id: userId },
             select: {
               firstName: true,
             },
           })
-          .catch((cause) => {
-            throw new ShelfError({
-              cause,
-              message:
-                "We can't find your user data. Please try again or contact support.",
-              additionalData: { userId },
-              label: "Assets",
-            });
-          }),
+          .then(foundUser => {
+            if (!foundUser) {
+              throw new ShelfError({
+                cause: null,
+                message: "We can't find your user data. Please try again or contact support.",
+                additionalData: { userId },
+                label: "Assets",
+              });
+            }
+            return foundUser;
+          })
       ]);
 
-    const settings = await getAssetIndexSettings({ userId, organizationId });
+    const settings = await getAssetIndexSettings({ userId, organizationId: permOrgId });
     const mode = settings.mode;
 
     /** For base and self service users, we dont allow to view the advanced index */
     if (mode === "ADVANCED" && ["BASE", "SELF_SERVICE"].includes(role)) {
       await changeMode({
         userId,
-        organizationId,
+        organizationId: permOrgId,
         mode: "SIMPLE",
       });
       throw new ShelfError({
@@ -135,7 +188,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       ? await simpleModeLoader({
           request,
           userId,
-          organizationId,
+          organizationId: permOrgId,
           organizations,
           role,
           currentOrganization,
@@ -145,7 +198,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       : await advancedModeLoader({
           request,
           userId,
-          organizationId,
+          organizationId: permOrgId,
           organizations,
           role,
           currentOrganization,
@@ -153,6 +206,17 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
           settings,
         });
   } catch (cause) {
+    // For guest user errors, create a new session and try again
+    if (userId?.startsWith('guest-') || !userId) {
+      console.log("[DEBUG] Error with guest user, creating new guest session");
+      const guestSession = await createGuestSession();
+      if (guestSession) {
+        context.setSession(guestSession);
+        // Redirect to self to use the new session
+        return safeRedirect(`/assets${new URL(request.url).search}`);
+      }
+    }
+    
     const reason = makeShelfError(cause, { userId });
     throw json(error(reason), { status: reason.status });
   }
@@ -233,13 +297,15 @@ export function shouldRevalidate({
   return defaultShouldRevalidate;
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => [
-  { title: appendToMetaTitle(data?.header.title) },
-];
+export const meta: MetaFunction = ({ data }) => {
+  const headerTitle = (data as { header?: { title?: string } })?.header?.title || "Assets";
+  return [{ title: appendToMetaTitle(headerTitle) }];
+};
 
 export default function AssetIndexPage() {
   const { roles } = useUserRoleHelper();
-  const { canImportAssets } = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData<typeof loader>() as unknown as AssetLoaderData;
+  const { canImportAssets } = loaderData;
   const { modeIsAdvanced } = useAssetIndexViewState();
 
   return (
@@ -307,7 +373,7 @@ export const AssetsList = ({
       <When
         truthy={userHasPermission({
           roles,
-          entity: PermissionEntity.custody,
+          entity: PermissionEntity.asset,
           action: PermissionAction.read,
         })}
       >
@@ -441,7 +507,7 @@ const ListAssetContent = ({ item }: { item: AssetsFromViewItem }) => {
       <When
         truthy={userHasPermission({
           roles,
-          entity: PermissionEntity.custody,
+          entity: PermissionEntity.asset, // Changed from custody
           action: PermissionAction.read,
         })}
       >

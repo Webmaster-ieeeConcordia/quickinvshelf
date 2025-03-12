@@ -9,93 +9,178 @@ export enum PermissionAction {
   checkin = "checkin",
   export = "export",
   import = "import",
-  archive = "archive",
-  cancel = "cancel",
-  manageAssets = "manage-assets",
-  custody = "custody",
-}
-export enum PermissionEntity {
-  asset = "asset",
-  assetIndexSettings = "assetIndexSettings",
-  qr = "qr",
-  booking = "booking",
-  tag = "tag",
-  category = "category",
-  location = "location",
-  customField = "customField",
-  workspace = "workspace",
-  teamMember = "teamMember",
-  teamMemberProfile = "teamMemberProfile",
-  dashboard = "dashboard",
-  generalSettings = "generalSettings",
-  subscription = "subscription",
-  kit = "kit",
-  note = "note",
-  scan = "scan",
-  custody = "custody",
-  assetReminders = "assetReminders",
+  custody = "custody"
 }
 
-//this will come from DB eventually
-export const Role2PermissionMap: {
-  [K in OrganizationRoles]?: Record<PermissionEntity, PermissionAction[]>;
-} = {
+export enum PermissionEntity {
+  asset = "asset",
+  category = "category",
+  booking = "booking",
+  customField = "customField",
+  dashboard = "dashboard",
+  kit = "kit",
+  location = "location",
+  subscription = "subscription",
+  teamMember = "teamMember",
+  tag = "tag"
+}
+
+// Add this new type to define the structure
+export type PermissionMap = {
+  [key in PermissionEntity]?: PermissionAction[];
+};
+
+// Add this new Role2PermissionMap export
+export const Role2PermissionMap: { [key in OrganizationRoles]?: PermissionMap } = {
+  [OrganizationRoles.OWNER]: {
+    asset: Object.values(PermissionAction),
+    category: Object.values(PermissionAction),
+    booking: Object.values(PermissionAction),
+    customField: Object.values(PermissionAction),
+    dashboard: Object.values(PermissionAction),
+    kit: Object.values(PermissionAction),
+    location: Object.values(PermissionAction),
+    subscription: Object.values(PermissionAction),
+    teamMember: Object.values(PermissionAction),
+    tag: Object.values(PermissionAction),
+  },
+  [OrganizationRoles.ADMIN]: {
+    asset: Object.values(PermissionAction),
+    category: Object.values(PermissionAction),
+    booking: Object.values(PermissionAction),
+    customField: Object.values(PermissionAction),
+    dashboard: Object.values(PermissionAction),
+    kit: Object.values(PermissionAction),
+    location: Object.values(PermissionAction),
+    subscription: Object.values(PermissionAction),
+    teamMember: Object.values(PermissionAction),
+    tag: Object.values(PermissionAction),
+  },
   [OrganizationRoles.BASE]: {
-    [PermissionEntity.asset]: [PermissionAction.read],
-    [PermissionEntity.assetIndexSettings]: [PermissionAction.read],
-    [PermissionEntity.booking]: [
-      PermissionAction.create,
-      PermissionAction.read,
-      PermissionAction.update,
-      PermissionAction.delete, // This is for the user to delete their own bookings only when they are draft.
-      PermissionAction.manageAssets,
-    ],
-    [PermissionEntity.qr]: [PermissionAction.read],
-    [PermissionEntity.category]: [],
-    [PermissionEntity.customField]: [],
-    [PermissionEntity.location]: [],
-    [PermissionEntity.tag]: [],
-    [PermissionEntity.teamMember]: [],
-    [PermissionEntity.teamMemberProfile]: [],
-    [PermissionEntity.workspace]: [],
-    [PermissionEntity.dashboard]: [],
-    [PermissionEntity.generalSettings]: [],
-    [PermissionEntity.subscription]: [],
-    [PermissionEntity.kit]: [PermissionAction.read],
-    [PermissionEntity.note]: [],
-    [PermissionEntity.scan]: [],
-    [PermissionEntity.custody]: [],
-    [PermissionEntity.assetReminders]: [],
+    asset: [PermissionAction.read],
+    category: [PermissionAction.read],
+    kit: [PermissionAction.read],
+    location: [PermissionAction.read],
+    teamMember: [PermissionAction.read],
+    tag: [PermissionAction.read],
   },
   [OrganizationRoles.SELF_SERVICE]: {
-    [PermissionEntity.asset]: [PermissionAction.read, PermissionAction.custody],
-    [PermissionEntity.assetIndexSettings]: [PermissionAction.read],
-    [PermissionEntity.booking]: [
-      PermissionAction.create,
-      PermissionAction.read,
-      PermissionAction.update,
-      PermissionAction.checkout,
-      PermissionAction.checkin,
-      PermissionAction.delete, // This is for the user to delete their own bookings only when they are draft.
-      PermissionAction.archive,
-      PermissionAction.manageAssets,
-      PermissionAction.cancel,
-    ],
-    [PermissionEntity.qr]: [PermissionAction.read],
-    [PermissionEntity.category]: [],
-    [PermissionEntity.customField]: [],
-    [PermissionEntity.location]: [],
-    [PermissionEntity.tag]: [],
-    [PermissionEntity.teamMember]: [],
-    [PermissionEntity.teamMemberProfile]: [],
-    [PermissionEntity.workspace]: [],
-    [PermissionEntity.dashboard]: [],
-    [PermissionEntity.generalSettings]: [],
-    [PermissionEntity.subscription]: [],
-    [PermissionEntity.kit]: [PermissionAction.read, PermissionAction.custody],
-    [PermissionEntity.note]: [],
-    [PermissionEntity.scan]: [],
-    [PermissionEntity.custody]: [PermissionAction.read],
-    [PermissionEntity.assetReminders]: [],
+    asset: [PermissionAction.read, PermissionAction.custody],
+    booking: [PermissionAction.create, PermissionAction.read],
   },
+};
+
+// Define permission mappings for each entity
+export const permissions: Record<PermissionEntity, Record<PermissionAction, OrganizationRoles[]>> = {
+  asset: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.BASE, OrganizationRoles.OWNER, OrganizationRoles.SELF_SERVICE],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER, OrganizationRoles.SELF_SERVICE]
+  },
+  dashboard: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER]
+  },
+  // Add similar permission mappings for other entities...
+  booking: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER, OrganizationRoles.SELF_SERVICE],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER, OrganizationRoles.SELF_SERVICE],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER]
+  },
+  category: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.BASE, OrganizationRoles.OWNER],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER]
+  },
+  customField: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.BASE, OrganizationRoles.OWNER],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER]
+  },
+  kit: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.BASE, OrganizationRoles.OWNER],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER]
+  },
+  location: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.BASE, OrganizationRoles.OWNER],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER]
+  },
+  subscription: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER]
+  },
+  teamMember: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.BASE, OrganizationRoles.OWNER],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER]
+  },
+  tag: {
+    create: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    read: [OrganizationRoles.ADMIN, OrganizationRoles.BASE, OrganizationRoles.OWNER],
+    update: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    delete: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkout: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    checkin: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    export: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    import: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER],
+    custody: [OrganizationRoles.ADMIN, OrganizationRoles.OWNER]
+  }
 };

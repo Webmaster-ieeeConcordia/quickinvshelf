@@ -38,12 +38,11 @@ export function userHasPermission({
 
   const validRoles = roles.filter((role) => {
     const entityPermMap = Role2PermissionMap[role];
-
-    if (!entityPermMap) {
-      return false;
-    }
+    if (!entityPermMap) return false;
 
     const permissions = entityPermMap[entity];
+    // Return false if permissions is undefined
+    if (!permissions) return false;
 
     return permissions.some((permission) =>
       actionsToCheck.includes(permission)

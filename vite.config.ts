@@ -6,7 +6,7 @@ import esbuild from "esbuild";
 import { flatRoutes } from "remix-flat-routes";
 import { cjsInterop } from "vite-plugin-cjs-interop";
 import { init } from "@paralleldrive/cuid2";
-import fs from "node:fs";
+import fs from "fs";
 
 const createHash = init({
   length: 8,
@@ -31,11 +31,13 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ["./app/routes/**/*"],
+    exclude: ['fs', 'path', 'os', 'crypto']
   },
   build: {
     target: "ES2022",
     assetsDir: `file-assets`,
     rollupOptions: {
+      external: ['fs', 'path', 'os', 'crypto'],
       output: {
         entryFileNames: `file-assets/${buildHash}/[name]-[hash].js`,
         chunkFileNames() {
@@ -51,6 +53,9 @@ export default defineConfig({
     alias: {
       ".prisma/client/index-browser":
         "./node_modules/.prisma/client/index-browser.js",
+      path: 'path-browserify',
+      os: 'empty-module',
+      crypto: 'crypto-browserify'
     },
   },
   plugins: [

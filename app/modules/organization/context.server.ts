@@ -7,6 +7,9 @@ import {
 import { NODE_ENV, SESSION_SECRET } from "~/utils/env";
 import type { ErrorLabel } from "~/utils/error";
 import { ShelfError } from "~/utils/error";
+import { db } from "~/database/db.server";
+import { OrganizationRoles } from "@prisma/client"; // add this import if not present
+import { createGuestSession } from "~/modules/auth/service.server";
 
 import { getUserOrganizations } from "./service.server";
 
@@ -53,44 +56,213 @@ export async function getSelectedOrganisation({
   userId: string;
   request: Request;
 }) {
-  let organizationId = await getSelectedOrganizationIdCookie(request);
+  try {
+    const ieeeOrgId = "cm6svb7av000dyozubn2k033i";
+    
+    // For guest users, make sure they have the IEEE organization
+    if (userId?.startsWith('guest-')) {
+      const ieeeOrgId = "cm6svb7av000dyozubn2k033i";
+      
+      try {
+        // Verify the guest user exists
+        const user = await db.user.findUnique({
+          where: { id: userId },
+          select: { id: true }
+        });
+        
+        // Instead of throwing if not found, create a new guest session
+        if (!user) {
+          console.log(`[DEBUG] Guest user ${userId} not found, creating new guest session`);
+          const guestSession = await createGuestSession();
+          if (guestSession) {
+            return await getSelectedOrganisation({ userId: guestSession.userId, request });
+          }
+          throw new ShelfError({
+            cause: null,
+            message: "Failed to create a new guest session",
+            label: "Organization",
+            status: 401,
+            additionalData: { userId }
+          });
+        }
+        
+        // Check if the IEEE organization exists
+        const org = await db.organization.findUnique({
+          where: { id: ieeeOrgId },
+        });
+        
+        if (!org) {
+          throw new ShelfError({
+            cause: null,
+            message: "IEEE organization does not exist",
+            label: "Organization",
+            status: 401,
+            additionalData: { userId, orgId: ieeeOrgId }
+          });
+        }
+        
+        // Check if user has relationship with this org
+        const userOrg = await db.userOrganization.findUnique({
+          where: { 
+            userId_organizationId: {
+              userId,
+              organizationId: ieeeOrgId
+            }
+          },
+          include: { organization: true }
+        });
+        
+        if (userOrg) {
+          return {
+            organizationId: org.id,
+            organizations: [org],
+            currentOrganization: org,
+            userOrganizations: [userOrg]
+          };
+        } else {
+          // Create relationship if missing - but carefully in a transaction
+          const newUserOrg = await db.$transaction(async (tx) => {
+            // Verify user exists inside transaction
+            const txUser = await tx.user.findUnique({
+              where: { id: userId },
+            });
+            
+            if (!txUser) {
+              throw new ShelfError({
+                cause: null,
+                message: "Guest user disappeared",
+                label: "Organization",
+                status: 401,
+              });
+            }
+            
+            return await tx.userOrganization.create({
+              data: {
+                userId,
+                organizationId: ieeeOrgId,
+                roles: [OrganizationRoles.ADMIN] // Changed from BASE to ADMIN
+              },
+              include: { organization: true }
+            });
+          });
+          
+          return {
+            organizationId: org.id,
+            organizations: [org],
+            currentOrganization: org,
+            userOrganizations: [newUserOrg]
+          };
+        }
+      } catch (guestError) {
+        // If any error occurs with a guest user, recreate the session
+        throw new ShelfError({
+          cause: guestError,
+          message: "Guest session expired. Creating a new guest session.",
+          label: "Organization",
+          status: 401, // Use 401 to trigger a new session
+          additionalData: { userId }
+        });
+      }
+    }
+    // Special handling for Discord-authenticated users
+    const isDiscordAuth = !userId?.startsWith('guest-');
+    
+    if (isDiscordAuth) {
+      console.log(`[DEBUG] Handling Discord authenticated user: ${userId}`);
+      
+      // Check if the IEEE organization exists
+      const org = await db.organization.findUnique({
+        where: { id: ieeeOrgId },
+      });
+      
+      if (!org) {
+        throw new ShelfError({
+          cause: null,
+          message: "IEEE organization does not exist",
+          label: "Organization",
+          status: 401,
+          additionalData: { userId, orgId: ieeeOrgId }
+        });
+      }
+      
+      // Check if user has relationship with this org
+      let userOrg = await db.userOrganization.findFirst({
+        where: { 
+          userId,
+          organizationId: ieeeOrgId
+        },
+        include: { organization: true }
+      });
+      
+      if (!userOrg) {
+        console.log(`[DEBUG] Creating organization relationship for Discord user: ${userId}`);
+        // Create relationship if missing
+        userOrg = await db.userOrganization.create({
+          data: {
+            userId,
+            organizationId: ieeeOrgId,
+            roles: [OrganizationRoles.ADMIN]
+          },
+          include: { organization: true }
+        });
+      }
+      return {
+        organizationId: org.id,
+        organizations: [org],
+        currentOrganization: org,
+        userOrganizations: [userOrg]
+      };
+    }
+    
+    // Regular flow for non-guest users
+    const userOrganizations = await db.userOrganization.findMany({
+      where: { userId },
+      include: { organization: true },
+    });
 
-  /** There could be a case when you get removed from an organization while browsing it.
-   * In this case what we do is we set the current organization to the first one in the list
-   */
-  const userOrganizations = await getUserOrganizations({ userId });
-  const organizations = userOrganizations.map((uo) => uo.organization);
-  const userOrganizationIds = organizations.map((org) => org.id);
+    if (userOrganizations.length === 0) {
+      throw new ShelfError({
+        cause: null,
+        message: "You don't have access to any organization.",
+        label: "Organization",
+        status: 403,
+        additionalData: { userId }
+      });
+    }
 
-  // If the organizationId is not set or the user is not part of the organization, we set it to the personal organization
-  // This case should be extremely rare (be revoked from an organization while browsing it), so, I keep it simple
-  // 💡 This can be improved by implementing a system that sends an sse notification when a user is revoked and forcing the app to reload
-  if (!organizationId || !userOrganizationIds.includes(organizationId)) {
-    organizationId = userOrganizationIds[0];
-  }
+    // Get selected organization ID from cookie
+    const selectedOrganizationId = await getSelectedOrganizationIdCookie(request);
+    
+    // Find organization that matches the cookie
+    const selectedUserOrganization = userOrganizations.find(
+      (userOrganization) =>
+        userOrganization.organization.id === selectedOrganizationId
+    );
 
-  const currentOrganization = organizations.find(
-    (org) => org.id === organizationId
-  );
-
-  // (should not happen but just in case)
-  if (!currentOrganization) {
+    // If no matching organization or none is selected, use the first one
+    return {
+      organizationId: selectedUserOrganization?.organization.id || userOrganizations[0].organization.id,
+      organizations: userOrganizations.map((uo) => uo.organization),
+      currentOrganization: selectedUserOrganization?.organization || userOrganizations[0].organization,
+      userOrganizations,
+    };
+  } catch (cause) {
+    if (userId?.startsWith('guest-')) {
+      // For guest users, throw special error that will trigger recreation
+      throw new ShelfError({
+        cause,
+        message: "Guest session expired. Creating a new guest session.",
+        label: "Organization",
+        status: 401, // Use 401 to trigger a new session
+        additionalData: { userId }
+      });
+    }
+    
     throw new ShelfError({
-      cause: null,
-      title: "No organization",
-      message:
-        "You do not have access to any organization. Please contact support.",
-      status: 403,
-      additionalData: { userId, organizationId, userOrganizationIds },
-      shouldBeCaptured: false,
-      label,
+      cause,
+      message: "Failed to get selected organization",
+      label: "Organization",
+      additionalData: { userId, request: request.url },
     });
   }
-
-  return {
-    organizationId,
-    organizations,
-    userOrganizations,
-    currentOrganization,
-  };
 }
