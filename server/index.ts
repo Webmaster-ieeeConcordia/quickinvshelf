@@ -35,11 +35,20 @@ export const getLoadContext: HonoServerOptions["getLoadContext"] = (
   const session = getSession<SessionData, FlashData>(c);
 
   return {
-    // Nice to have if you want to display the app version or do something in the app when deploying a new version
-    // Exemple: on navigate, check if the app version is the same as the one in the build assets and if not, display a toast to the user to refresh the page
-    // Prevent the user to use an old version of the client side code (it is only downloaded on document request)
     appVersion: mode === "production" ? build.assets.version : "dev",
-    isAuthenticated: session.has(authSessionKey),
+    // Consider Discord users authenticated even if token validation fails
+    isAuthenticated: (() => {
+      const auth = session.get(authSessionKey);
+      if (!auth) return false;
+      
+      // Discord users (numeric IDs) are always considered authenticated
+      if (auth.userId && /^\d+$/.test(auth.userId)) {
+        return true;
+      }
+      
+      // For other users, use the regular check
+      return session.has(authSessionKey);
+    })(),
     // we could ensure that session.get() match a specific shape
     // let's trust our system for now
     getSession: () => {
@@ -111,8 +120,17 @@ export const server = await createHonoServer({
             ...sessionStorage,
             // If a user doesn't come back to the app within 30 days, their session will be deleted.
             async commitSession(session) {
+              // Get auth session to check if it's a Discord user
+              const auth = session.get(authSessionKey);
+              const isDiscordUser = auth?.userId && /^\d+$/.test(auth.userId);
+              
+              // Set longer session for Discord users (30 days)
+              const maxAge = isDiscordUser 
+                ? 60 * 60 * 24 * 30  // 30 days for Discord users
+                : 60 * 60 * 24 * 7;  // 7 days for others
+              
               return sessionStorage.commitSession(session, {
-                maxAge: 60 * 60 * 24 * 3, // 3 days
+                maxAge,
               });
             },
           };

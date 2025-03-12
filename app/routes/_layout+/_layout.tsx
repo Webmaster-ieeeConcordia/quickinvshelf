@@ -62,7 +62,11 @@ export async function loader({
 }: LoaderFunctionArgs & { context: CustomContext }) {
   const authSession = context.getSession();
   const { userId } = authSession;
-
+  console.log("[DEBUG] Session in _layout loader:", { 
+    userId, 
+    isGuestSession: userId?.startsWith('guest-'),
+    path: new URL(request.url).pathname 
+  });
   try {
     // Handle guest session first - special case
     if (userId?.startsWith('guest-')) {
@@ -180,15 +184,19 @@ export async function loader({
               organizations,
               url: request.url,
             }),
-        isGuest: !authSession.userId, // Add guest flag
-      }),
+            isGuest: userId?.startsWith('guest-'), // FIXED: Check if user is a guest by ID prefix
+          }),
       {
         headers: [setCookie(await userPrefs.serialize(userPrefsCookie))],
       }
     );
   } catch (cause) {
-    // If user not found and not a guest, create guest session
-    if (!userId?.startsWith('guest-')) {
+    // Check if this is returning from an auth flow - don't create guest session in that case
+    const url = new URL(request.url);
+    const isReturningFromAuth = url.pathname === '/assets' && url.search.includes('code=');
+    
+    // If user not found and not a guest, and not returning from auth, create guest session
+    if (!userId?.startsWith('guest-') && !isReturningFromAuth) {
       console.log("[DEBUG] User not found, creating guest session");
       const guestSession = await createGuestSession();
       if (guestSession) {
@@ -197,6 +205,7 @@ export async function loader({
       }
     }
     
+    // For auth returns or other errors, just pass through the error
     const reason = makeShelfError(cause, { userId: authSession.userId });
     throw json(error(reason), { status: reason.status });
   }

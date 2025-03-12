@@ -94,6 +94,12 @@ export async function loader({
   params 
 }: LoaderFunctionArgs & { context: CustomContext }) {
   const authSession = context.getSession();
+  console.log("[DEBUG] Auth session in assets loader:", {
+    userId: authSession.userId,
+    email: authSession.email,
+    searchParams: new URL(request.url).searchParams.toString()
+  });
+  
   const { userId } = authSession;
 
   try {

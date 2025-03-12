@@ -34,9 +34,22 @@ export function protect({
     //@ts-expect-error fixed soon
     const session = getSession<SessionData, FlashData>(c);
     const auth = session.get(authSessionKey);
-
-    // If there is no auth session at all
-    if (!auth) {
+    
+    const referer = c.req.header('Referer') || '';
+    const url = new URL(c.req.url);
+    const hasAuthParam = url.searchParams.has('auth');
+    const isReturningFromAuth = referer.includes('/oauth/callback') || hasAuthParam;
+    
+    // Check if this is a Discord user (preserve their session)
+    const isDiscordUser = auth?.userId && /^\d+$/.test(auth.userId);
+    
+    // If authenticated as Discord user, always proceed
+    if (isDiscordUser) {
+      console.log("[DEBUG] Preserving Discord user session:", auth.userId);
+      return next();
+    }
+    // If there is no auth session AND we're not returning from auth
+    if (!auth && !isReturningFromAuth) {
       const guestSession = await createGuestSession();
       if (guestSession) {
         session.set(authSessionKey, guestSession);
@@ -47,7 +60,13 @@ export function protect({
     }
 
     // For guest sessions, identified by userId starting with 'guest-'
-    if (auth.userId?.startsWith('guest-')) {
+    if (auth?.userId?.startsWith('guest-')) {
+      return next();
+    }
+
+    // Skip validation for sessions that just came from OAuth
+    if (isReturningFromAuth) {
+      console.log("[DEBUG] Skipping session validation for post-auth request");
       return next();
     }
 

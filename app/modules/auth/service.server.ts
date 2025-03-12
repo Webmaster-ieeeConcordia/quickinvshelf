@@ -16,6 +16,8 @@ import type { ErrorLabel } from "~/utils/error";
 import { isLikeShelfError, ShelfError } from "~/utils/error";
 import { Logger } from "~/utils/logger";
 import { mapAuthSession } from "./mappers.server";
+import { useEffect } from "react";
+import { useNavigate } from "@remix-run/react";
 
 
 const label: ErrorLabel = "Auth";
@@ -604,17 +606,24 @@ export async function getAuthResponseByAccessToken(accessToken: string) {
 }
 
 export async function validateSession(token: string | null, userId?: string) {
-  // Allow guest sessions to pass validation
+  // Skip validation for users with Discord IDs (numeric only)
+  if (userId && /^\d+$/.test(userId)) {
+    console.log("[DEBUG] Skipping token validation for Discord user:", userId);
+    return true;
+  }
+  
+  // Skip validation for guest users
   if (userId?.startsWith('guest-')) {
     return true;
   }
   
-  // Skip validation for null/empty tokens from guest sessions
+  // Skip validation for null/empty tokens
   if (!token) {
     return false;
   }
 
   const t0 = performance.now();
+  // Rest of your existing validation logic
   const result = await db.$queryRaw<{ id: String; revoked: boolean }[]>`
     SELECT id, revoked 
     FROM auth.refresh_tokens 

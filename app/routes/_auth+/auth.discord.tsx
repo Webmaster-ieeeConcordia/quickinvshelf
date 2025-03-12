@@ -45,17 +45,22 @@ export default function AuthDiscord() {
     };
     const initiateDiscordAuth = async () => {
       try {
+        // Use Supabase's OAuth flow with all the required scopes
         const supabase = getSupabaseClient();
         const redirectTo = `${window.location.origin}/oauth/callback`;
 
+        logger("Starting Discord OAuth with redirectTo:", redirectTo);
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: "discord",
           options: {
             redirectTo,
-            scopes: "identify email guilds",
+            scopes: "identify email guilds guilds.members.read",
+            queryParams: {
+              // Add extra permission if needed through query params
+              prompt: "consent"
+            }
           },
         });
-
         if (error) {
           logger("OAuth Error:", error);
           return navigate("/login?error=oauth");

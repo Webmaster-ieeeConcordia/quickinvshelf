@@ -57,6 +57,8 @@ export async function getSelectedOrganisation({
   request: Request;
 }) {
   try {
+    const ieeeOrgId = "cm6svb7av000dyozubn2k033i";
+    
     // For guest users, make sure they have the IEEE organization
     if (userId?.startsWith('guest-')) {
       const ieeeOrgId = "cm6svb7av000dyozubn2k033i";
@@ -162,6 +164,55 @@ export async function getSelectedOrganisation({
         });
       }
     }
+    // Special handling for Discord-authenticated users
+    const isDiscordAuth = !userId?.startsWith('guest-');
+    
+    if (isDiscordAuth) {
+      console.log(`[DEBUG] Handling Discord authenticated user: ${userId}`);
+      
+      // Check if the IEEE organization exists
+      const org = await db.organization.findUnique({
+        where: { id: ieeeOrgId },
+      });
+      
+      if (!org) {
+        throw new ShelfError({
+          cause: null,
+          message: "IEEE organization does not exist",
+          label: "Organization",
+          status: 401,
+          additionalData: { userId, orgId: ieeeOrgId }
+        });
+      }
+      
+      // Check if user has relationship with this org
+      let userOrg = await db.userOrganization.findFirst({
+        where: { 
+          userId,
+          organizationId: ieeeOrgId
+        },
+        include: { organization: true }
+      });
+      
+      if (!userOrg) {
+        console.log(`[DEBUG] Creating organization relationship for Discord user: ${userId}`);
+        // Create relationship if missing
+        userOrg = await db.userOrganization.create({
+          data: {
+            userId,
+            organizationId: ieeeOrgId,
+            roles: [OrganizationRoles.ADMIN]
+          },
+          include: { organization: true }
+        });
+      }
+      return {
+        organizationId: org.id,
+        organizations: [org],
+        currentOrganization: org,
+        userOrganizations: [userOrg]
+      };
+    }
     
     // Regular flow for non-guest users
     const userOrganizations = await db.userOrganization.findMany({
@@ -172,9 +223,7 @@ export async function getSelectedOrganisation({
     if (userOrganizations.length === 0) {
       throw new ShelfError({
         cause: null,
-        message: userId?.startsWith('guest-') 
-          ? "No organization available for guest. Please refresh the page."
-          : "You don't have access to any organization.",
+        message: "You don't have access to any organization.",
         label: "Organization",
         status: 403,
         additionalData: { userId }

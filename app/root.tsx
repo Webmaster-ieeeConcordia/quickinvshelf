@@ -39,6 +39,9 @@ import { setSelectedOrganizationIdCookie } from "~/modules/organization/context.
 import { setCookie } from "~/utils/cookies.server";
 import { db } from "~/database/db.server";
 import { makeShelfError } from "~/utils/error";
+import { OAuthFragmentHandler } from "~/components/auth/OAuthFragment";
+
+
 
 export interface RootData {
   env: typeof getBrowserEnv;
@@ -69,6 +72,31 @@ export const meta: MetaFunction = () => [
 
 export const loader = async ({ context, request }: LoaderFunctionArgs) => {
   try {
+    const url = new URL(request.url);
+    const referer = request.headers.get('Referer') || '';
+    const isReturningFromAuth = (referer.includes('/oauth/callback') || 
+                               url.searchParams.has('auth'));
+    
+    // Skip guest session creation entirely if coming from OAuth flow
+    if (isReturningFromAuth) {
+      console.log("[DEBUG] Returning from auth flow - preserving session");
+      try {
+        const session = context.getSession();
+        return json(data({ 
+          isGuest: session.userId?.startsWith('guest-') || false,
+          maintenanceMode: false, 
+          env: getBrowserEnv() 
+        }));
+      } catch (error) {
+        console.error("[DEBUG] Error getting session after auth:", error);
+        return json(data({ 
+          isGuest: false,
+          authError: "Authentication error. Please try again.",
+          maintenanceMode: false, 
+          env: getBrowserEnv() 
+        }));
+      }
+    }
     if (!context.isAuthenticated) {
       const guestSession = await createGuestSession();
       if (guestSession) {
@@ -198,7 +226,7 @@ function App() {
     <BlockInteractions
       title={"Maintenance is being performed"}
       content={
-        "Apologies, we’re down for scheduled maintenance. Please try again later."
+        "Apologies, we're down for scheduled maintenance. Please try again later."
       }
       cta={{
         to: "https://www.shelf.nu/blog-categories/updates-maintenance",
@@ -207,12 +235,15 @@ function App() {
       icon="tool"
     />
   ) : (
-    <PwaManagerProvider>
-      <div>
-        <Outlet />
-        <Toaster />
-      </div>
-    </PwaManagerProvider>
+    <>
+      <OAuthFragmentHandler />
+      <PwaManagerProvider>
+        <div>
+          <Outlet />
+          <Toaster />
+        </div>
+      </PwaManagerProvider>
+    </>
   );
 }
 
