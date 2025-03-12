@@ -173,7 +173,7 @@ export async function loader({
         hideNoticeCard: userPrefsCookie.hideNoticeCard,
         minimizedSidebar: userPrefsCookie.minimizedSidebar,
         scannerCameraId: userPrefsCookie.scannerCameraId,
-        hideInstallPwaPrompt: pwaPromptCookie.hidden,
+        hideInstallPwaPrompt: true, // Always hide the prompt
         isAdmin,
         canUseBookings: canUseBookings(currentOrganization),
         /** THis is used to disable team organizations when the currentOrg is Team and no subscription is present  */
@@ -222,12 +222,12 @@ export default function App() {
   const { disabledTeamOrg, minimizedSidebar, isGuest } = useLoaderData<typeof loader>();
   const workspaceSwitching = useAtomValue(switchingWorkspaceAtom);
 
-  const renderInstallPwaPromptOnMobile = () =>
+  /*const renderInstallPwaPromptOnMobile = () =>
     // returns InstallPwaPromptModal if the device width is lesser than 640px and the app is being accessed from browser not PWA
     window.matchMedia("(max-width: 640px)").matches &&
     !window.matchMedia("(display-mode: standalone)").matches ? (
       <InstallPwaPromptModal />
-    ) : null;
+    ) : null;*/
 
   return (
     <SidebarProvider defaultOpen={!minimizedSidebar}>
@@ -277,7 +277,7 @@ export default function App() {
             {isGuest && (
               <div className="hidden border-b bg-gray-50 px-6 py-2 md:flex md:justify-between md:items-center">
                 <p className="text-sm text-gray-600">
-                  You're browsing as a guest. Login to save your changes and access all features.
+                  browsing as a guest login as exec to access all features.
                 </p>
                 <Link 
                   to="/auth/discord" 
@@ -293,9 +293,9 @@ export default function App() {
           </>
         )}
         <Toaster />
-        <ClientOnly fallback={null}>
-          {renderInstallPwaPromptOnMobile}
-        </ClientOnly>
+        {/*<ClientOnly fallback={null}>
+          {/*renderInstallPwaPromptOnMobile
+        </ClientOnly>*/}
       </SidebarInset>
     </SidebarProvider>
   );

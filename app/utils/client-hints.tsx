@@ -82,6 +82,16 @@ export const getClientHint = (request: Request): ClientHint => ({
  */
 export function useHints() {
   const requestInfo = useRequestInfo();
+  
+  // Add this safety check to prevent the error
+  if (!requestInfo) {
+    console.warn('useHints was called but requestInfo is undefined, using default values');
+    return {
+      timeZone: "UTC",
+      locale: "en-US"
+    };
+  }
+  
   return requestInfo.hints;
 }
 

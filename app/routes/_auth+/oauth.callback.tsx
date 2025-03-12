@@ -14,6 +14,25 @@ import { ShelfError } from "~/utils/error";
 import { Logger } from "~/utils/logger";
 import { randomUsernameFromEmail } from "~/utils/user";
 
+interface DiscordGuild {
+  id: string;
+  name: string;
+  icon: string | null;
+  owner: boolean;
+  permissions: string;
+  features: string[];
+}
+
+interface DiscordGuildMember {
+  user?: {
+    id: string;
+    username: string;
+    avatar?: string | null;
+  };
+  nick?: string | null;
+  roles: string[];
+  joined_at: string;
+}
 type OAuthCallbackResponse = {
   redirectTo?: string;
   error?: { message: string };
@@ -70,7 +89,7 @@ export const action: ActionFunction = async ({ request, context }) => {
     const discordToken = access_token;
 
     // Check if user has exec role
-    const hasExecRole = await checkDiscordExecRole(discordToken);
+    const hasExecRole = await checkDiscordExecRole(discordToken, discordUserId);
     if (!hasExecRole) {
       throw new ShelfError({
         cause: new Error("User does not have required Discord role"),
@@ -160,48 +179,84 @@ export const action: ActionFunction = async ({ request, context }) => {
 
 
 
-async function checkDiscordExecRole(accessToken: string): Promise<boolean> {
-  try {
-    const guildId = process.env.DISCORD_GUILD_ID;
-    
-    if (!guildId) {
-      console.error("Discord guild ID not set in environment variables");
-      return true; // Temporarily return true for testing
-    }
-    
-    console.log("[DEBUG] Checking Discord role with Guild ID:", guildId);
-    
-    // Format the authorization header correctly
-    const response = await fetch(
-      `https://discord.com/api/users/@me/guilds/${guildId}/member`, 
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      }
-    );
+// my fault gang
+const APPROVED_EXEC_IDS = [
+  "349671812512219136", // nicho
+  "470769044002439169", // alex
+  "752819381699870771", // yara
+  "1050232641573634068", // minh
+  "444440321665925120", // abu
+  "180437155322003456", // brian
+  "835772007311343676", // camila
+  "190518270388862976", //ceyhun
+  "755174330811547649", // chris
+  "1020309256681037864", //drew
+  "476144471541678093", //efan
+  "357574142402494464", //elizabet
+  "1061870532015964160", // fatema
+  "933132962243969024", //gift
+  "1003514885935726593", // gorav
+  "522192758006611974", // jacob
+  "425821703655129088", // kaden
+  "747495296069664808", // kevin 
+  "576553584015966210", // ksenia
+  "351053512983052298", // luyun
+  "752884373510029333", // maitri
+  "317448057643859969", // malcolm
+  "782662280601010186", // nicholas nick
+  "197460413338615808", // ossama
+  "805229043510935592", // paolo
+  "1014972297708326992", // parsa
+  "1265361030641356965", // parsa #2
+  "189886045561552896", // rv 
+  "1044357047069712405", // raghda
+  "145200036635082752", // rayan
+  "561515699785302027", // rishit
+  "843661255650967552", // shai
+  "252529572560502804", // zach
+  "1241408566204563598", // rushin
+  "691655134731829248", // zoeh
+  "627313812302987267", // diego
+  "227590502906593282", // jon sanie
+  "714836826786889828", // momo
+  "773716628261175296", // ivan 
+  "735275752265875577", // fozail
+  "692474743793778748", // lina
+  "446476678596919296", // augusto
+  "462354478264221699", // oumayma
+  "297399831050190848", // sam
+  "1156934653412913234", // nurseit
+  "290894293042987009", // houssam
+  "1212048971380559965", //isabella
+  "874842014456356874", // mathias
+  "772593955908747284", //amirreza
+  "248230862657683457", //alexandre
+  "332262168806555649", // mohammad
+  "702958543879536671", //ardalan
+  "995708835111120927", //achal
 
-    // Debug response
-    console.log("[DEBUG] Discord API response status:", response.status);
-    const responseText = await response.text();
-    console.log("[DEBUG] Discord API response body:", responseText);
-    
-    // Parse response if valid
-    if (response.ok) {
-      const data = JSON.parse(responseText);
-      const roleId = process.env.DISCORD_EXEC_ROLE_ID || "1239606005889761412";
-      console.log("[DEBUG] Looking for role:", roleId, "in roles:", data.roles);
-      return data.roles.includes(roleId);
-    }
-    
-    // For testing, allow login regardless of role
-    console.warn("Discord role check failed, but allowing login for testing");
-    return true;
-  } catch (error) {
-    console.error("Discord role check failed:", error);
-    // For testing, allow login regardless of role
-    return true;
+];
+async function checkDiscordExecRole(accessToken: string, userId?: string): Promise<boolean> {
+  // If no userId was provided, we can't check
+  if (!userId) {
+    console.warn("[DEBUG] No Discord user ID provided for role check");
+    return false; // For development only - change to false in production
   }
+  
+  console.log(`[DEBUG] Checking if user ${userId} is in approved exec list`);
+  
+  // Check if the user ID is in our approved list
+  const isApproved = APPROVED_EXEC_IDS.includes(userId);
+  
+  console.log(`[DEBUG] User ${userId} approval status: ${isApproved ? 'Approved ✓' : 'Not approved ✗'}`);
+  
+  // For development, optionally allow access anyway
+  if (!isApproved) {
+    console.warn("User is not in approved exec list, so not allowing login for development");
+    return false; // Change to "return isApproved;" in production
+  }
+  
+  return true;
 }
 
 export default function OAuthCallbackPage() {
@@ -215,14 +270,19 @@ export default function OAuthCallbackPage() {
       console.log("[DEBUG] Processing OAuth callback");
       const fragment = window.location.hash.substring(1);
       console.log("[DEBUG] Hash fragment:", fragment);
-      
+      console.log("[DEBUG] Hash fragment length:", fragment.length);
+
       const params = new URLSearchParams(fragment);
 
       const accessToken = params.get("access_token");
       const refreshToken = params.get("refresh_token");
       const expiresIn = params.get("expires_in");
       const expiresAt = params.get("expires_at");
-
+      // Log token existence and length for debugging
+      console.log("[DEBUG] Token extraction:", {
+        accessTokenLength: accessToken?.length,
+        refreshTokenLength: refreshToken?.length
+      });
       console.log("[DEBUG] OAuth tokens extracted:", { 
         hasAccessToken: !!accessToken,
         hasRefreshToken: !!refreshToken 
