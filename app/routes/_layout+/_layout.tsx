@@ -62,11 +62,7 @@ export async function loader({
 }: LoaderFunctionArgs & { context: CustomContext }) {
   const authSession = context.getSession();
   const { userId } = authSession;
-  console.log("[DEBUG] Session in _layout loader:", { 
-    userId, 
-    isGuestSession: userId?.startsWith('guest-'),
-    path: new URL(request.url).pathname 
-  });
+  
   try {
     // Handle guest session first - special case
     if (userId?.startsWith('guest-')) {
@@ -98,7 +94,6 @@ export async function loader({
       } catch (guestError) {
         // If error has status 401, create new guest session
         if (guestError instanceof ShelfError && guestError.status === 401) {
-          console.log("[DEBUG] Creating new guest session due to expired guest");
           const guestSession = await createGuestSession();
           if (guestSession) {
             context.setSession(guestSession);
@@ -197,7 +192,6 @@ export async function loader({
     
     // If user not found and not a guest, and not returning from auth, create guest session
     if (!userId?.startsWith('guest-') && !isReturningFromAuth) {
-      console.log("[DEBUG] User not found, creating guest session");
       const guestSession = await createGuestSession();
       if (guestSession) {
         context.setSession(guestSession);
