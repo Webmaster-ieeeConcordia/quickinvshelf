@@ -79,7 +79,6 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
     
     // Skip guest session creation entirely if coming from OAuth flow
     if (isReturningFromAuth) {
-      console.log("[DEBUG] Returning from auth flow - preserving session");
       try {
         const session = context.getSession();
         return json(data({ 
@@ -140,7 +139,6 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
       }));
     } catch (userError) {
       // If user data can't be found, create a new guest session
-      console.log("[DEBUG] User data not found, creating new guest session");
       const newGuestSession = await createGuestSession();
       if (newGuestSession) {
         context.setSession({

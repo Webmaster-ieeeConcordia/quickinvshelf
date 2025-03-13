@@ -11,7 +11,6 @@ const JOB_NAME = 'guest-cleanup-job';
 
 async function deleteGuestUser(guestId: string, email: string) {
   try {
-    console.log("[DEBUG] Starting delete process for guest:", { guestId, email });
 
     // First check if user still exists
     const user = await db.user.findUnique({
@@ -23,34 +22,29 @@ async function deleteGuestUser(guestId: string, email: string) {
     });
 
     if (!user) {
-      console.log("[DEBUG] User already deleted:", { guestId });
       return true;
     }
 
     // Delete in correct order to avoid foreign key constraints
     if (user.userOrganizations.length > 0) {
-      console.log("[DEBUG] Deleting user organizations...");
       await db.userOrganization.deleteMany({
         where: { userId: guestId }
       });
     }
 
     if (user.teamMembers.length > 0) {
-      console.log("[DEBUG] Deleting team members...");
       await db.teamMember.deleteMany({
         where: { userId: guestId }
       });
     }
 
     // Delete user from database
-    console.log("[DEBUG] Deleting user from database...");
     await db.user.delete({
       where: { id: guestId }
     });
 
     // Try to delete from Supabase auth
     try {
-      console.log("[DEBUG] Deleting from Supabase auth...");
       const { error: authError } = await getSupabaseAdmin().auth.admin.deleteUser(guestId);
       if (authError) {
         if (authError.message.includes("User not found")) {
@@ -61,7 +55,6 @@ async function deleteGuestUser(guestId: string, email: string) {
         }
       }
     } catch (authError) {
-      console.error("[DEBUG] Failed to delete from auth:", authError);
       // Don't fail the whole operation if auth deletion fails
       Logger.error({
         message: "Failed to delete guest from auth",
@@ -69,7 +62,6 @@ async function deleteGuestUser(guestId: string, email: string) {
       });
     }
 
-    console.log("[DEBUG] Successfully deleted guest user");
     return true;
   } catch (error) {
     console.error("[DEBUG] Delete error details:", error);
@@ -82,19 +74,15 @@ async function deleteGuestUser(guestId: string, email: string) {
 }
 
 export async function registerGuestCleanupWorker() {
-  console.log("[DEBUG] Starting guest cleanup worker registration");
 
   try {
     // Register the worker - with better error handling
-    console.log("[DEBUG] Registering cleanup worker");
     
     // First register work handler
     await scheduler.work(JOB_NAME, async (job: Job) => {
-      console.log("[DEBUG] Running cleanup job", { jobId: job.id, data: job.data });
       try {
         // Calculate cutoff time
         const cutoffTime = new Date(Date.now() - GUEST_TTL_HOURS * 60 * 60 * 1000);
-        console.log("[DEBUG] Looking for guests created before:", cutoffTime);
 
         // Find expired guest users
         const expiredGuests = await db.user.findMany({
@@ -105,14 +93,7 @@ export async function registerGuestCleanupWorker() {
           select: { id: true, email: true, createdAt: true }
         });
 
-        console.log("[DEBUG] Guest search results:", {
-          count: expiredGuests.length,
-          guests: expiredGuests.map(g => ({
-            id: g.id,
-            email: g.email,
-            createdAt: g.createdAt
-          }))
-        });
+
         
         // Delete each expired guest
         for (const guest of expiredGuests) {
@@ -131,7 +112,6 @@ export async function registerGuestCleanupWorker() {
       }
     });
 
-    console.log("[DEBUG] Worker registered, scheduling recurring job");
 
     // Then schedule recurring work with proper type handling
     const scheduleJob = async () => {
@@ -140,7 +120,6 @@ export async function registerGuestCleanupWorker() {
           type: 'cleanup',
           timestamp: new Date().toISOString()
         });
-        console.log("[DEBUG] Scheduled new cleanup job");
       } catch (error) {
         console.error("[DEBUG] Failed to schedule cleanup job:", error);
       }
@@ -150,7 +129,6 @@ export async function registerGuestCleanupWorker() {
     await scheduleJob();
     setInterval(scheduleJob, CLEANUP_INTERVAL);
 
-    console.log("[DEBUG] Guest cleanup worker fully registered");
     return true;
   } catch (error) {
     console.error("[DEBUG] Failed to register guest cleanup worker:", error);
@@ -159,7 +137,6 @@ export async function registerGuestCleanupWorker() {
 }
 
 export async function triggerGuestCleanup() {
-  console.log("[DEBUG] Manually triggering guest cleanup");
   return scheduler.send(JOB_NAME, {
     type: 'manualCleanup',
     timestamp: new Date().toISOString()

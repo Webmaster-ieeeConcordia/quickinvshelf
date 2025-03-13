@@ -47,16 +47,12 @@ export const loader: LoaderFunction = async ({ context }) => {
 
 // oauth callback action
 export const action: ActionFunction = async ({ request, context }) => {
-  console.log("[DEBUG] OAuth callback action starting");
   try {
     const body = await request.formData();
     const access_token = body.get("access_token")?.toString();
     const refresh_token = body.get("refresh_token")?.toString();
     
-    console.log("[DEBUG] OAuth tokens received:", { 
-      hasAccessToken: !!access_token, 
-      hasRefreshToken: !!refresh_token
-    });
+
     const expires_in = parseInt(body.get("expires_in")?.toString() || "0", 10);
     const expires_at = body.get("expires_at")?.toString();
 
@@ -90,19 +86,22 @@ export const action: ActionFunction = async ({ request, context }) => {
 
     // Check if user has exec role
     const hasExecRole = await checkDiscordExecRole(discordToken, discordUserId);
-    if (!hasExecRole) {
+    /*if (!hasExecRole) {
+      // not an exec so instead create account with tier 1
+      
       throw new ShelfError({
         cause: new Error("User does not have required Discord role"),
         message: "You must be an IEEE Concordia exec to access this application",
         label: "OAuthCallback", 
         status: 403
       });
-    }
+    }*/
+
+// Replace starting from the discordUserId section through the organization portion
+
+
 
     let user = await findUserByEmail(authSession.user.email);
-    console.log("[DEBUG] Found user:", user); // Log the full user object to see all fields
-
-
 
     if (!user) {
       user = await createUser({
@@ -115,49 +114,97 @@ export const action: ActionFunction = async ({ request, context }) => {
         createdWithInvite: false,
       });
 
-      // Set the user's tier to tier_2 in the database
+      // Set tier based on exec status
       await db.user.update({
         where: { id: user.id },
-        data: { tierId: "tier_2" }, // Replace "tier_2" with the actual ID for tier_2 in your database
+        data: {
+          tierId: hasExecRole ? "tier_2" : "tier_1" 
+        },
+      });
+    }
+    else {
+      // If user already exists, update their tier based on exec status
+      await db.user.update({
+        where: { id: user.id },
+        data: { 
+          tierId: hasExecRole ? "tier_2" : "tier_1" 
+        },
       });
     }
 
     // Set session
     await context.setSession({
       accessToken: access_token,
-      refreshToken: refresh_token, // refreshtoken
+      refreshToken: refresh_token,
       expiresIn: expires_in,
       expiresAt: expires_at ? parseInt(expires_at, 10) : Date.now() + expires_in * 1000,
-      userId: user.id, // Use internal UUID if available
+      userId: user.id,
       email: authSession.user.email,
     });
-    console.log("[DEBUG] Setting auth session with userId:", user.id);
-    // Get or create organization
-    console.log("success");
-    let organization;
-    try {
-      organization = await getOrganizationByUserId({
-        userId: user.id,  
-        orgType: OrganizationType.TEAM, // Changed from PERSONAL to TEAM to match createOrganization
+
+    // Use the IEEE organization ID
+    const ieeeOrgId = "cm6svb7av000dyozubn2k033i";
+
+    // First check if organization exists
+    let organization = await db.organization.findUnique({
+      where: { id: ieeeOrgId },
+      select: { id: true, name: true, type: true }
+    });
+
+    if (!organization) {
+      // Fall back to user's organization if IEEE org doesn't exist
+      try {
+        organization = await getOrganizationByUserId({
+          userId: user.id,
+          orgType: OrganizationType.TEAM,
+        });
+      } catch (error) {
+        // Create personal organization if no organizations are found
+        organization = await createOrganization({
+          name: `${user.firstName || authSession.user.email.split("@")[0]}'s Workspace`,
+          userId: user.id,
+          currency: "USD",
+          image: null,
+        });
+      }
+    } else {
+      // IEEE organization exists, make sure user has appropriate access
+      
+      // Check if user already has a relationship with organization
+      const userOrg = await db.userOrganization.findFirst({
+        where: {
+          userId: user.id,
+          organizationId: ieeeOrgId
+        }
       });
-    } catch (error) {
-      // If organization not found, create it
-      organization = await createOrganization({
-        name: `${user.firstName || authSession.user.email.split("@")[0]}'s Workspace`,
-        userId: user.id, // Using Discord ID directly
-        currency: "USD",
-        image: null,
-      });
+      
+      // If no relationship exists, create one with appropriate role
+      if (!userOrg) {
+        
+        await db.userOrganization.create({
+          data: {
+            userId: user.id,
+            organizationId: ieeeOrgId,
+            // Set role based on exec status - using the proper enum from Prisma
+            roles: hasExecRole ? ["ADMIN"] : ["BASE"]
+          }
+        });
+      } else {
+        // Update roles if needed - this ensures the user has the correct role
+        
+        const desiredRole = hasExecRole ? "ADMIN" : "BASE";
+        if (!userOrg.roles.includes(desiredRole)) {
+          await db.userOrganization.update({
+            where: { id: userOrg.id },
+            data: { 
+              roles: hasExecRole ? ["ADMIN"] : ["BASE"] 
+            }
+          });
+        }
+      }
     }
 
-    // Set organization cookie
-    const organizationCookie = await setSelectedOrganizationIdCookie(organization.id);
-
     // Redirect to assets page
-    console.log("[DEBUG] Setting auth session for:", {
-      userId: user.id,
-      email: authSession.user.email
-    });
     return redirect("/assets?auth=true", {
       headers: [
         setCookie(await setSelectedOrganizationIdCookie(organization.id)),
@@ -243,12 +290,10 @@ async function checkDiscordExecRole(accessToken: string, userId?: string): Promi
     return false; // For development only - change to false in production
   }
   
-  console.log(`[DEBUG] Checking if user ${userId} is in approved exec list`);
   
   // Check if the user ID is in our approved list
   const isApproved = APPROVED_EXEC_IDS.includes(userId);
   
-  console.log(`[DEBUG] User ${userId} approval status: ${isApproved ? 'Approved ✓' : 'Not approved ✗'}`);
   
   // For development, optionally allow access anyway
   if (!isApproved) {
@@ -267,10 +312,7 @@ export default function OAuthCallbackPage() {
   // Run immediately on mount - don't wait for effects
   useEffect(() => {
     if (!hasSubmitted) {
-      console.log("[DEBUG] Processing OAuth callback");
       const fragment = window.location.hash.substring(1);
-      console.log("[DEBUG] Hash fragment:", fragment);
-      console.log("[DEBUG] Hash fragment length:", fragment.length);
 
       const params = new URLSearchParams(fragment);
 
@@ -279,14 +321,6 @@ export default function OAuthCallbackPage() {
       const expiresIn = params.get("expires_in");
       const expiresAt = params.get("expires_at");
       // Log token existence and length for debugging
-      console.log("[DEBUG] Token extraction:", {
-        accessTokenLength: accessToken?.length,
-        refreshTokenLength: refreshToken?.length
-      });
-      console.log("[DEBUG] OAuth tokens extracted:", { 
-        hasAccessToken: !!accessToken,
-        hasRefreshToken: !!refreshToken 
-      });
 
       if (!accessToken || !refreshToken || !expiresIn) {
         setError("Missing required OAuth parameters");
@@ -307,7 +341,6 @@ export default function OAuthCallbackPage() {
         method: "POST",
         body: formData
       }).then(response => {
-        console.log("[DEBUG] OAuth form submission response:", response.status);
         if (response.redirected) {
           window.location.href = response.url;
         }

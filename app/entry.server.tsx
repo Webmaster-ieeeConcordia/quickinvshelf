@@ -20,25 +20,19 @@ export * from "../server";
 schedulerService
   .init()
   .then(async () => {
-    console.log("[DEBUG] Starting worker initialization...");
 
     try {
-      console.log("[DEBUG] About to register guest cleanup worker");
       await registerGuestCleanupWorker();
-      console.log("[DEBUG] Guest cleanup worker registration completed");
 
       // Register other workers after guest cleanup
       await Promise.all([
         registerBookingWorkers().catch(e => {
-          console.error("[DEBUG] Booking worker failed:", e);
           throw e;
         }),
         regierAssetWorkers().catch(e => {
-          console.error("[DEBUG] Asset worker failed:", e);
           throw e;
         }),
         registerEmailWorkers().catch(e => {
-          console.error("[DEBUG] Email worker failed:", e);
           throw e;
         })
       ]);
@@ -55,7 +49,6 @@ schedulerService
     }
   })
   .finally(() => {
-    console.log("[DEBUG] Scheduler initialization complete");
   });
 // === end: register scheduler and workers ===
 
