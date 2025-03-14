@@ -273,6 +273,7 @@ export default function App() {
                 <p className="text-sm text-gray-600">
                   browsing as a guest login as exec to access all features.
                 </p>
+                <ClientOnly fallback={null}>
                 <Link 
                   to="/auth/discord" 
                   className="ml-4 flex items-center gap-1 whitespace-nowrap rounded-md bg-[#5865F2] px-3 py-1 text-sm font-medium text-white shadow-sm hover:bg-[#4a57e0] focus:outline-none"
@@ -280,6 +281,7 @@ export default function App() {
                   <DiscordLogoIcon className="h-4 w-4" />
                   <span>Login with Discord</span>
                 </Link>
+                </ClientOnly>
               </div>
             )}
             
