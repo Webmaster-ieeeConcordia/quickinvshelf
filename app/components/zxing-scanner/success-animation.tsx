@@ -1,9 +1,10 @@
-import Lottie from "lottie-react";
+import React from "react";
+import { LottieWrapper } from "~/components/lottie-wrapper";
 import successfullScanAnimation from "../../lottie/success-scan.json";
 
 export default function SuccessAnimation() {
   return (
-    <Lottie
+    <LottieWrapper
       animationData={successfullScanAnimation}
       loop={false}
       style={{ width: 200, height: 200 }}
