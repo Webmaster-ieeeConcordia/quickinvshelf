@@ -14,6 +14,8 @@ import { registerGuestCleanupWorker } from "./modules/auth/guest-cleanup.worker"
 import { ShelfError } from "./utils/error";
 import { Logger } from "./utils/logger";
 import * as schedulerService from "./utils/scheduler.server";
+import "./utils/permissions/permission";
+
 export * from "../server";
 
 // === start: register scheduler and workers ===

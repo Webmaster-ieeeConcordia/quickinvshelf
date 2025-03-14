@@ -26,7 +26,24 @@ interface RequirePermissionReturn {
 // Overload signatures
 export function requirePermission(params: AsyncPermissionParams): Promise<RequirePermissionReturn>;
 export function requirePermission(userPermissions: string[] | undefined, requiredPermission: string): boolean;
+export async function requireAdmin(userId: string) {
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { role: true }
+  });
 
+  if (!user || user.role !== Roles.ADMIN) {
+    throw new ShelfError({
+      cause: null,
+      title: "Unauthorized",
+      message: "You must be an administrator to access this resource",
+      status: 403,
+      label: "Auth"
+    });
+  }
+  
+  return true;
+}
 // Implementation
 export function requirePermission(
   paramsOrPermissions: AsyncPermissionParams | string[] | undefined,
