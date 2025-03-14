@@ -6,7 +6,7 @@ import { ShelfError, type ErrorLabel } from "~/utils/error";
 import type { Column, ColumnLabelKey } from "./helpers";
 import { defaultFields, fixedFields } from "./helpers";
 import { getOrganizationById } from "../organization/service.server";
-
+import { getSupabaseAdmin } from "~/integrations/supabase/admin.server";
 const label: ErrorLabel = "Asset Index Settings";
 
 // Add this function to the file
