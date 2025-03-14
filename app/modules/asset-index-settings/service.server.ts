@@ -6,77 +6,9 @@ import { ShelfError, type ErrorLabel } from "~/utils/error";
 import type { Column, ColumnLabelKey } from "./helpers";
 import { defaultFields, fixedFields } from "./helpers";
 import { getOrganizationById } from "../organization/service.server";
-import { getSupabaseAdmin } from "~/integrations/supabase/client.ts";
+
 const label: ErrorLabel = "Asset Index Settings";
 
-// Add this function to the file
-
-/**
- * Clean up expired guest users - can be called directly by API routes
- * This implementation works in Vercel's serverless environment
- */
-export async function cleanupGuestUsers() {
-  try {
-    // Define guest TTL (1 hour)
-    const GUEST_TTL_HOURS = 1;
-    
-    // Calculate cutoff time
-    const cutoffTime = new Date(Date.now() - GUEST_TTL_HOURS * 60 * 60 * 1000);
-
-    // Find expired guest users
-    const expiredGuests = await db.user.findMany({
-      where: {
-        email: { endsWith: '@guest.ieee.concordia.ca' },
-        createdAt: { lt: cutoffTime }
-      },
-      select: { id: true, email: true, createdAt: true }
-    });
-
-    let deletedCount = 0;
-    
-    // Delete each expired guest
-    for (const guest of expiredGuests) {
-      try {
-        // Delete organization relationships
-        await db.userOrganization.deleteMany({
-          where: { userId: guest.id }
-        });
-        
-        // Delete team member records
-        await db.teamMember.deleteMany({
-          where: { userId: guest.id }
-        });
-        
-        // Delete user from database
-        await db.user.delete({
-          where: { id: guest.id }
-        });
-        
-        // Try to delete from Supabase auth
-        try {
-          const { error: authError } = await getSupabaseAdmin().auth.admin.deleteUser(guest.id);
-          if (authError && !authError.message.includes("User not found")) {
-            console.error("[DEBUG] Auth deletion error:", authError);
-          }
-        } catch (authError) {
-          // Log but continue
-          console.error("[DEBUG] Failed to delete guest from auth", { guestId: guest.id, error: authError });
-        }
-        
-        deletedCount++;
-      } catch (error) {
-        console.error("[DEBUG] Failed to delete guest:", { guest, error });
-        // Continue with next guest even if one fails
-      }
-    }
-
-    console.log(`[DEBUG] Cleaned up ${deletedCount} expired guest users`);
-    return { success: true, deletedCount };
-  } catch (error) {
-    console.error("[DEBUG] Guest cleanup failed:", error);
-    throw error;
-  }
-}
 export async function createUserAssetIndexSettings({
   userId,
   organizationId,
