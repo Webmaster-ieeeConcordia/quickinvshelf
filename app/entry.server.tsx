@@ -17,46 +17,45 @@ import * as schedulerService from "./utils/scheduler.server";
 export * from "../server";
 
 // === start: register scheduler and workers ===
-schedulerService
-  .init()
-  .then(async () => {
-
-    try {
-      await registerGuestCleanupWorker();
-
-      // Register other workers after guest cleanup
-      await Promise.all([
-        registerBookingWorkers().catch(e => {
-          throw e;
-        }),
-        regierAssetWorkers().catch(e => {
-          throw e;
-        }),
-        registerEmailWorkers().catch(e => {
-          throw e;
-        })
-      ]);
-
-    } catch (error) {
-      console.error("[DEBUG] Worker registration failed:", error);
-      Logger.error(
-        new ShelfError({
-          cause: error,
-          message: "Failed to register workers",
-          label: "Scheduler"
-        })
-      );
-    }
-  })
-  .finally(() => {
-  });
+// Skip worker registration in Vercel environment
+if (process.env.VERCEL !== "1") {
+  schedulerService
+    .init()
+    .then(async () => {
+      try {
+        await registerGuestCleanupWorker();
+  
+        // Register other workers after guest cleanup
+        await Promise.all([
+          registerBookingWorkers().catch(e => {
+            throw e;
+          }),
+          regierAssetWorkers().catch(e => {
+            throw e;
+          }),
+          registerEmailWorkers().catch(e => {
+            throw e;
+          })
+        ]);
+  
+      } catch (error) {
+        console.error("[DEBUG] Worker registration failed:", error);
+        Logger.error(
+          new ShelfError({
+            cause: error,
+            message: "Failed to register workers",
+            label: "Scheduler"
+          })
+        );
+      }
+    })
+    .finally(() => {
+    });
+}
 // === end: register scheduler and workers ===
 
 /**
  * Handle errors that are not handled by a loader or action try/catch block.
- *
- * If this happen, you will have Sentry logs with a `Unhandled` tag and `unhandled.remix.server` as origin.
- *
  */
 export const handleError = Sentry.wrapHandleErrorWithSentry;
 
@@ -67,8 +66,6 @@ export default function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-  // This is ignored so we can keep it in the template for visibility.  Feel
-  // free to delete this parameter in your app if you're not using it!
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loadContext: AppLoadContext
 ) {
