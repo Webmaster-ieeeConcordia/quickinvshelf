@@ -94,11 +94,7 @@ export async function loader({
   params 
 }: LoaderFunctionArgs & { context: CustomContext }) {
   const authSession = context.getSession();
-  console.log("[DEBUG] Auth session in assets loader:", {
-    userId: authSession.userId,
-    email: authSession.email,
-    searchParams: new URL(request.url).searchParams.toString()
-  });
+
   
   const { userId } = authSession;
 
@@ -112,7 +108,6 @@ export async function loader({
       });
       
       if (!guestUser) {
-        console.log(`[DEBUG] Guest user ${userId} not found, creating new guest session in assets`);
         const guestSession = await createGuestSession();
         if (guestSession) {
           context.setSession(guestSession);
@@ -208,7 +203,6 @@ export async function loader({
   } catch (cause) {
     // For guest user errors, create a new session and try again
     if (userId?.startsWith('guest-') || !userId) {
-      console.log("[DEBUG] Error with guest user, creating new guest session");
       const guestSession = await createGuestSession();
       if (guestSession) {
         context.setSession(guestSession);

@@ -1,0 +1,17 @@
+{
+    "framework": "remix",
+    "buildCommand": "npx prisma generate && npm run build",
+    "devCommand": "npm run dev",
+    "installCommand": "npm install",
+    "crons": [
+      {
+        "path": "/api/cleanup-guests",
+        "schedule": "0 0 * * *"
+      }
+    ],
+    "env": {
+      "VERCEL": "1",
+      "SENTRY_DSN": "",
+      "NODE_ENV": "production"
+    }
+}
