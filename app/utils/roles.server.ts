@@ -82,6 +82,38 @@ export function requirePermission(
 
   throw new Error('Invalid parameters passed to requirePermission');
 }
+/**
+ * Verifies that a user has admin permissions
+ * Required for accessing admin dashboard routes
+ */
+export async function requireAdmin(userId: string): Promise<void> {
+  // Find any organizations where this user has ADMIN role
+  const userOrgs = await db.userOrganization.findMany({
+    where: {
+      userId,
+      roles: {
+        has: OrganizationRoles.ADMIN
+      }
+    },
+    include: {
+      organization: true
+    }
+  });
+
+  // If no admin roles found, throw permission error
+  if (userOrgs.length === 0) {
+    throw new ShelfError({
+      cause: null,
+      title: "Admin access required",
+      message: "You need administrator privileges to access this area",
+      label: "Permission",
+      status: 403
+    });
+  }
+
+  // User has admin role, permission granted
+  return;
+}
 
 /** Gets the role needed for SSO login from the groupID returned by the SSO claims */
 export function getRoleFromGroupId(
