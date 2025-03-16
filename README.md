@@ -1,6 +1,6 @@
 
 
-## How to Get Started 💻
+## How to Get Started inventory.ieeeconcordia.ca
 
 To set up QuickInv:
 
