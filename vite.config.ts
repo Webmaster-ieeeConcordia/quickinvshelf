@@ -7,7 +7,6 @@ import { flatRoutes } from "remix-flat-routes";
 import { cjsInterop } from "vite-plugin-cjs-interop";
 import { init } from "@paralleldrive/cuid2";
 import fs from "fs";
-import react from "@vitejs/plugin-react";
 
 const createHash = init({
   length: 8,
@@ -60,7 +59,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    react(),
     cjsInterop({
       // List of CJS dependencies that require interop
       dependencies: [
@@ -114,7 +112,4 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
-  ssr: {
-    noExternal: ['react', 'react-dom'],
-  },
 });

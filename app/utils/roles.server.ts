@@ -13,6 +13,12 @@ interface AsyncPermissionParams {
   entity: PermissionEntity;
   action: PermissionAction;
 }
+interface RequireAdminReturn {
+  organizations: Organization[];
+  organizationId: string;
+  currentOrganization: Organization;
+  userOrganizations: UserOrganization[];
+}
 
 interface RequirePermissionReturn {
   organizations: Organization[];
@@ -26,6 +32,7 @@ interface RequirePermissionReturn {
 // Overload signatures
 export function requirePermission(params: AsyncPermissionParams): Promise<RequirePermissionReturn>;
 export function requirePermission(userPermissions: string[] | undefined, requiredPermission: string): boolean;
+
 
 // Implementation
 export function requirePermission(
@@ -82,39 +89,42 @@ export function requirePermission(
 
   throw new Error('Invalid parameters passed to requirePermission');
 }
-/**
- * Verifies that a user has admin permissions
- * Required for accessing admin dashboard routes
- */
-export async function requireAdmin(userId: string): Promise<void> {
-  // Find any organizations where this user has ADMIN role
-  const userOrgs = await db.userOrganization.findMany({
-    where: {
-      userId,
-      roles: {
-        has: OrganizationRoles.ADMIN
-      }
-    },
-    include: {
-      organization: true
-    }
-  });
+export async function requireAdmin(
+  userId: string,
+  request: Request
+): Promise<RequireAdminReturn> {
+  const { organizationId, userOrganizations, organizations, currentOrganization } =
+    await getSelectedOrganisation({ userId, request });
 
-  // If no admin roles found, throw permission error
-  if (userOrgs.length === 0) {
+  const mappedUserOrganizations = userOrganizations.map((uo) => ({
+    id: uo.organization.id,
+    userId: uo.organization.userId,
+    createdAt: uo.organization.createdAt,
+    updatedAt: uo.organization.updatedAt,
+    organizationId: uo.organization.id,
+    roles: uo.roles,
+  }));
+
+  const roles = mappedUserOrganizations.find(
+    (uo) => uo.organizationId === organizationId
+  )?.roles;
+
+  if (!roles || !roles.includes(OrganizationRoles.ADMIN)) {
     throw new ShelfError({
       cause: null,
-      title: "Admin access required",
-      message: "You need administrator privileges to access this area",
+      message: "Requires admin privileges",
       label: "Permission",
-      status: 403
+      status: 403,
     });
   }
 
-  // User has admin role, permission granted
-  return;
+  return {
+    organizations,
+    organizationId,
+    currentOrganization,
+    userOrganizations: mappedUserOrganizations,
+  };
 }
-
 /** Gets the role needed for SSO login from the groupID returned by the SSO claims */
 export function getRoleFromGroupId(
   ssoDetails: SsoDetails,

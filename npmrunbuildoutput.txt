@@ -1,0 +1,463 @@
+Nicholas@aar-port-21 no % npm run build
+
+> build
+> NODE_ENV=production remix vite:build
+
+vite v5.4.14 building for production...
+node_modules/lottie-web/build/player/lottie.js (17010:32): Use of eval in "node_modules/lottie-web/build/player/lottie.js" is strongly discouraged as it poses security risks and may cause issues with minification.
+✓ 5376 modules transformed.
+Generated an empty chunk: "healthcheck".
+Generated an empty chunk: "logout".
+Generated an empty chunk: "resend-otp".
+Generated an empty chunk: "send-otp".
+Generated an empty chunk: "account-details.subscription.customer-portal".
+Generated an empty chunk: "qrs.codes_.zip_".
+Generated an empty chunk: "assets._assetId.note".
+Generated an empty chunk: "assets.export._fileName_.csv_".
+Generated an empty chunk: "bookings._bookingId.cal_.ics_".
+Generated an empty chunk: "calendar.events".
+Generated an empty chunk: "settings.team.users._userId._".
+Generated an empty chunk: "_organizationId.qr-codes_.zip_".
+Generated an empty chunk: "admin.export-org-assets._organizationId._fileName_.csv_".
+Generated an empty chunk: "admin.import-org-assets._organizationId".
+Generated an empty chunk: "asset-index-settings".
+Generated an empty chunk: "asset.refresh-main-image".
+Generated an empty chunk: "asset.scan".
+Generated an empty chunk: "assets._assetId.generate-qr-obj".
+Generated an empty chunk: "assets.add-to-booking".
+Generated an empty chunk: "assets.bulk-assign-custody".
+Generated an empty chunk: "assets.bulk-assign-tags".
+Generated an empty chunk: "assets.bulk-mark-availability".
+Generated an empty chunk: "assets.bulk-release-custody".
+Generated an empty chunk: "assets.bulk-update-category".
+Generated an empty chunk: "assets.bulk-update-location".
+Generated an empty chunk: "bookings._bookingId.generate-pdf".
+Generated an empty chunk: "bookings.bulk-actions".
+Generated an empty chunk: "bookings.get-all".
+Generated an empty chunk: "categories.bulk-actions".
+Generated an empty chunk: "client-notification".
+Generated an empty chunk: "custom-fields.bulk-actions".
+Generated an empty chunk: "get-scanned-item._qrId".
+Generated an empty chunk: "hide-pwa-install-prompt".
+Generated an empty chunk: "image._imageId".
+Generated an empty chunk: "kit.refresh-image".
+Generated an empty chunk: "kits.bulk-actions".
+Generated an empty chunk: "locations.bulk-actions".
+Generated an empty chunk: "model-filters".
+Generated an empty chunk: "nrm.bulk-actions".
+Generated an empty chunk: "oss-friends".
+Generated an empty chunk: "public-stats".
+Generated an empty chunk: "reminders.team-members".
+Generated an empty chunk: "settings.import-users".
+Generated an empty chunk: "settings.invite-user".
+Generated an empty chunk: "sse.notification".
+Generated an empty chunk: "stripe-webhook".
+Generated an empty chunk: "tags.bulk-actions".
+Generated an empty chunk: "user.change-current-organization".
+Generated an empty chunk: "user.prefs.dismiss-notice-card".
+Generated an empty chunk: "user.prefs.hide-install-pwa-prompt-modal".
+Generated an empty chunk: "user.prefs.minimized-sidebar".
+Generated an empty chunk: "user.prefs.scanner-camera".
+Generated an empty chunk: "user.prefs.skip-onboarding-checklist".
+Generated an empty chunk: "user.prefs.upload-user-photo".
+Generated an empty chunk: "utils.parse-markdown".
+build/client/.vite/manifest.json                                                                       215.38 kB │ gzip:  17.55 kB
+build/client/file-assets/e1gd24cb/styles.css                                                             0.08 kB │ gzip:   0.10 kB
+build/client/file-assets/e1gd24cb/custom-modal.css                                                       0.08 kB │ gzip:   0.08 kB
+build/client/file-assets/e1gd24cb/scanner.css                                                            0.09 kB │ gzip:   0.10 kB
+build/client/file-assets/e1gd24cb/link-existing-asset.css                                                0.13 kB │ gzip:   0.12 kB
+build/client/file-assets/e1gd24cb/fonts.css                                                              0.22 kB │ gzip:   0.15 kB
+build/client/file-assets/e1gd24cb/assets.css                                                             0.26 kB │ gzip:   0.18 kB
+build/client/file-assets/e1gd24cb/asset.css                                                              0.48 kB │ gzip:   0.16 kB
+build/client/file-assets/e1gd24cb/actions-dropdown.css                                                   0.48 kB │ gzip:   0.17 kB
+build/client/file-assets/e1gd24cb/skeleton-loading.css                                                   0.69 kB │ gzip:   0.29 kB
+build/client/file-assets/e1gd24cb/nprogress2.css                                                         0.75 kB │ gzip:   0.29 kB
+build/client/file-assets/e1gd24cb/nprogress.css                                                          0.83 kB │ gzip:   0.40 kB
+build/client/file-assets/e1gd24cb/styles.new.css                                                         0.95 kB │ gzip:   0.35 kB
+build/client/file-assets/e1gd24cb/calendar.css                                                           4.05 kB │ gzip:   0.93 kB
+build/client/file-assets/e1gd24cb/index.css                                                              5.45 kB │ gzip:   1.53 kB
+build/client/file-assets/e1gd24cb/global.css                                                             6.86 kB │ gzip:   2.07 kB
+build/client/file-assets/e1gd24cb/maplibre-gl.css                                                       65.46 kB │ gzip:   9.22 kB
+build/client/file-assets/e1gd24cb/tailwind.css                                                         296.52 kB │ gzip:  39.62 kB
+build/client/file-assets/e1gd24cb/healthcheck-l0sNRNKZ.js                                                0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/logout-l0sNRNKZ.js                                                     0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/resend-otp-l0sNRNKZ.js                                                 0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/send-otp-l0sNRNKZ.js                                                   0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/account-details.subscription.customer-portal-l0sNRNKZ.js               0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/qrs.codes_.zip_-l0sNRNKZ.js                                            0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets._assetId.note-l0sNRNKZ.js                                       0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets.export._fileName_.csv_-l0sNRNKZ.js                              0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/bookings._bookingId.cal_.ics_-l0sNRNKZ.js                              0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/calendar.events-l0sNRNKZ.js                                            0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/settings.team.users._userId._-l0sNRNKZ.js                              0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/_organizationId.qr-codes_.zip_-l0sNRNKZ.js                             0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/admin.export-org-assets._organizationId._fileName_.csv_-l0sNRNKZ.js    0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/admin.import-org-assets._organizationId-l0sNRNKZ.js                    0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/asset-index-settings-l0sNRNKZ.js                                       0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/asset.refresh-main-image-l0sNRNKZ.js                                   0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/asset.scan-l0sNRNKZ.js                                                 0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets._assetId.generate-qr-obj-l0sNRNKZ.js                            0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets.add-to-booking-l0sNRNKZ.js                                      0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets.bulk-assign-custody-l0sNRNKZ.js                                 0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets.bulk-assign-tags-l0sNRNKZ.js                                    0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets.bulk-mark-availability-l0sNRNKZ.js                              0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets.bulk-release-custody-l0sNRNKZ.js                                0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets.bulk-update-category-l0sNRNKZ.js                                0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/assets.bulk-update-location-l0sNRNKZ.js                                0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/bookings._bookingId.generate-pdf-l0sNRNKZ.js                           0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/bookings.bulk-actions-l0sNRNKZ.js                                      0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/bookings.get-all-l0sNRNKZ.js                                           0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/categories.bulk-actions-l0sNRNKZ.js                                    0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/client-notification-l0sNRNKZ.js                                        0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/custom-fields.bulk-actions-l0sNRNKZ.js                                 0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/get-scanned-item._qrId-l0sNRNKZ.js                                     0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/hide-pwa-install-prompt-l0sNRNKZ.js                                    0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/image._imageId-l0sNRNKZ.js                                             0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/kit.refresh-image-l0sNRNKZ.js                                          0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/kits.bulk-actions-l0sNRNKZ.js                                          0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/locations.bulk-actions-l0sNRNKZ.js                                     0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/model-filters-l0sNRNKZ.js                                              0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/nrm.bulk-actions-l0sNRNKZ.js                                           0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/oss-friends-l0sNRNKZ.js                                                0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/public-stats-l0sNRNKZ.js                                               0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/reminders.team-members-l0sNRNKZ.js                                     0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/settings.import-users-l0sNRNKZ.js                                      0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/settings.invite-user-l0sNRNKZ.js                                       0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/sse.notification-l0sNRNKZ.js                                           0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/stripe-webhook-l0sNRNKZ.js                                             0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/tags.bulk-actions-l0sNRNKZ.js                                          0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/user.change-current-organization-l0sNRNKZ.js                           0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/user.prefs.dismiss-notice-card-l0sNRNKZ.js                             0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/user.prefs.hide-install-pwa-prompt-modal-l0sNRNKZ.js                   0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/user.prefs.minimized-sidebar-l0sNRNKZ.js                               0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/user.prefs.scanner-camera-l0sNRNKZ.js                                  0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/user.prefs.skip-onboarding-checklist-l0sNRNKZ.js                       0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/user.prefs.upload-user-photo-l0sNRNKZ.js                               0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/utils.parse-markdown-l0sNRNKZ.js                                       0.00 kB │ gzip:   0.02 kB
+build/client/file-assets/e1gd24cb/account-details.index-CcPYVMiU.js                                      0.05 kB │ gzip:   0.07 kB
+build/client/file-assets/e1gd24cb/assets._assetId._index-CcPYVMiU.js                                     0.05 kB │ gzip:   0.07 kB
+build/client/file-assets/e1gd24cb/assets._assetId.index-CcPYVMiU.js                                      0.05 kB │ gzip:   0.07 kB
+build/client/file-assets/e1gd24cb/me._index-CcPYVMiU.js                                                  0.05 kB │ gzip:   0.07 kB
+build/client/file-assets/e1gd24cb/settings.index-CcPYVMiU.js                                             0.05 kB │ gzip:   0.07 kB
+build/client/file-assets/e1gd24cb/settings.team.users._userId._index-CcPYVMiU.js                         0.05 kB │ gzip:   0.07 kB
+build/client/file-assets/e1gd24cb/_index-CSxRPO1x.js                                                     0.05 kB │ gzip:   0.07 kB
+build/client/file-assets/e1gd24cb/append-to-meta-title-BnMWAGG3.js                                       0.05 kB │ gzip:   0.07 kB
+build/client/file-assets/e1gd24cb/scanner-CUDQVTrb.js                                                    0.06 kB │ gzip:   0.08 kB
+build/client/file-assets/e1gd24cb/organization-CEgeOTiE.js                                               0.06 kB │ gzip:   0.08 kB
+build/client/file-assets/e1gd24cb/custom-modal-CX2uIW2F.js                                               0.06 kB │ gzip:   0.08 kB
+build/client/file-assets/e1gd24cb/link-existing-asset-1-Jr_92H.js                                        0.07 kB │ gzip:   0.09 kB
+build/client/file-assets/e1gd24cb/constants-C1a5FB1e.js                                                  0.07 kB │ gzip:   0.09 kB
+build/client/file-assets/e1gd24cb/when-CaGj7sbG.js                                                       0.08 kB │ gzip:   0.10 kB
+build/client/file-assets/e1gd24cb/tiny-invariant-CopsF_GD.js                                             0.08 kB │ gzip:   0.10 kB
+build/client/file-assets/e1gd24cb/asset-C2faZ0-C.js                                                      0.11 kB │ gzip:   0.10 kB
+build/client/file-assets/e1gd24cb/selected-assets-atoms-D3Oxx0iS.js                                      0.12 kB │ gzip:   0.11 kB
+build/client/file-assets/e1gd24cb/use-user-data-Bgn_4-HY.js                                              0.12 kB │ gzip:   0.12 kB
+build/client/file-assets/e1gd24cb/use-hydrated-PwXKy8eG.js                                               0.13 kB │ gzip:   0.13 kB
+build/client/file-assets/e1gd24cb/dynamic-title-atom-BpEyNHY4.js                                         0.14 kB │ gzip:   0.14 kB
+build/client/file-assets/e1gd24cb/form-jOGDNQxI.js                                                       0.14 kB │ gzip:   0.14 kB
+build/client/file-assets/e1gd24cb/constants-B5HHlf7r.js                                                  0.15 kB │ gzip:   0.14 kB
+build/client/file-assets/e1gd24cb/use-disabled-DAB2HjKJ.js                                               0.15 kB │ gzip:   0.15 kB
+build/client/file-assets/e1gd24cb/bookings-eRLxYTp5.js                                                   0.16 kB │ gzip:   0.15 kB
+build/client/file-assets/e1gd24cb/user-DIUbHuBS.js                                                       0.19 kB │ gzip:   0.12 kB
+build/client/file-assets/e1gd24cb/use-current-organization-id-DnDEqQWm.js                                0.20 kB │ gzip:   0.17 kB
+build/client/file-assets/e1gd24cb/sub-heading-Dpjrhk37.js                                                0.21 kB │ gzip:   0.18 kB
+build/client/file-assets/e1gd24cb/card-Cnxi_STY.js                                                       0.21 kB │ gzip:   0.18 kB
+build/client/file-assets/e1gd24cb/button-group-BivTM6t1.js                                               0.21 kB │ gzip:   0.18 kB
+build/client/file-assets/e1gd24cb/client-only-BNdZRzAm.js                                                0.23 kB │ gzip:   0.18 kB
+build/client/file-assets/e1gd24cb/index-TiOtB0WN.js                                                      0.24 kB │ gzip:   0.21 kB
+build/client/file-assets/e1gd24cb/content-wrapper-BuRDFOW4.js                                            0.24 kB │ gzip:   0.19 kB
+build/client/file-assets/e1gd24cb/fallback-loading-BqQHJmgr.js                                           0.24 kB │ gzip:   0.19 kB
+build/client/file-assets/e1gd24cb/use-client-notification-C-fWnTvc.js                                    0.25 kB │ gzip:   0.21 kB
+build/client/file-assets/e1gd24cb/misc-CqhmpbIn.js                                                       0.26 kB │ gzip:   0.18 kB
+build/client/file-assets/e1gd24cb/date-DeqnH_gj.js                                                       0.27 kB │ gzip:   0.22 kB
+build/client/file-assets/e1gd24cb/zod-llmVIHC7.js                                                        0.29 kB │ gzip:   0.24 kB
+build/client/file-assets/e1gd24cb/browser-D7TYKfvk.js                                                    0.30 kB │ gzip:   0.25 kB
+build/client/file-assets/e1gd24cb/chevron-right-Bqy_yXzP.js                                              0.30 kB │ gzip:   0.25 kB
+build/client/file-assets/e1gd24cb/markdown-viewer-s4bdVVyX.js                                            0.31 kB │ gzip:   0.24 kB
+build/client/file-assets/e1gd24cb/tag-I1JPlpR3.js                                                        0.31 kB │ gzip:   0.24 kB
+build/client/file-assets/e1gd24cb/upgrade-message-BTcZPwy7.js                                            0.32 kB │ gzip:   0.26 kB
+build/client/file-assets/e1gd24cb/gray-badge-Diarc-WW.js                                                 0.33 kB │ gzip:   0.25 kB
+build/client/file-assets/e1gd24cb/shelf.config-Dxx9nL7j.js                                               0.34 kB │ gzip:   0.26 kB
+build/client/file-assets/e1gd24cb/use-api-query-56xKy4AS.js                                              0.35 kB │ gzip:   0.27 kB
+build/client/file-assets/e1gd24cb/use-fetcher-with-reset-BAOfE45h.js                                     0.35 kB │ gzip:   0.26 kB
+build/client/file-assets/e1gd24cb/profile-picture-CUo0l5Sy.js                                            0.36 kB │ gzip:   0.28 kB
+build/client/file-assets/e1gd24cb/use-constant-DdVvQI9W.js                                               0.36 kB │ gzip:   0.26 kB
+build/client/file-assets/e1gd24cb/user-C-lrm7GO.js                                                       0.37 kB │ gzip:   0.29 kB
+build/client/file-assets/e1gd24cb/image-CgNbN_t8.js                                                      0.38 kB │ gzip:   0.29 kB
+build/client/file-assets/e1gd24cb/absolute-positioned-header-actions-BkYcB3CR.js                         0.40 kB │ gzip:   0.28 kB
+build/client/file-assets/e1gd24cb/use-viewport-height-c8kPLxkO.js                                        0.41 kB │ gzip:   0.25 kB
+build/client/file-assets/e1gd24cb/http-dNluu358.js                                                       0.41 kB │ gzip:   0.24 kB
+build/client/file-assets/e1gd24cb/use-asset-index-view-state-DGL4_cKB.js                                 0.42 kB │ gzip:   0.28 kB
+build/client/file-assets/e1gd24cb/schema-BHnDzdUt.js                                                     0.42 kB │ gzip:   0.27 kB
+build/client/file-assets/e1gd24cb/customer-portal-form-NhVWSAbV.js                                       0.43 kB │ gzip:   0.30 kB
+build/client/file-assets/e1gd24cb/settings.team.nrm.add-member-CWx70xwU.js                               0.43 kB │ gzip:   0.28 kB
+build/client/file-assets/e1gd24cb/user-badge-CoQlYVD9.js                                                 0.45 kB │ gzip:   0.31 kB
+build/client/file-assets/e1gd24cb/file-D3h_HIdc.js                                                       0.47 kB │ gzip:   0.33 kB
+build/client/file-assets/e1gd24cb/line-break-text-DO0eq93s.js                                            0.49 kB │ gzip:   0.36 kB
+build/client/file-assets/e1gd24cb/list-item-52II7-cZ.js                                                  0.49 kB │ gzip:   0.36 kB
+build/client/file-assets/e1gd24cb/badge-IGNtvriW.js                                                      0.50 kB │ gzip:   0.35 kB
+build/client/file-assets/e1gd24cb/user-user-role-helper-HnZZOV5F.js                                      0.50 kB │ gzip:   0.30 kB
+build/client/file-assets/e1gd24cb/settings.team._index-CScSOn4y.js                                       0.51 kB │ gzip:   0.31 kB
+build/client/file-assets/e1gd24cb/alarm-clock-RZWxlyQD.js                                                0.51 kB │ gzip:   0.34 kB
+build/client/file-assets/e1gd24cb/_qrId-By4jGTmT.js                                                      0.51 kB │ gzip:   0.31 kB
+build/client/file-assets/e1gd24cb/password-input-BofTmNyt.js                                             0.53 kB │ gzip:   0.36 kB
+build/client/file-assets/e1gd24cb/info-tooltip-DdvxIWqU.js                                               0.53 kB │ gzip:   0.35 kB
+build/client/file-assets/e1gd24cb/kit-image-Bd61e9vc.js                                                  0.53 kB │ gzip:   0.37 kB
+build/client/file-assets/e1gd24cb/textual-divider-BYGnAu3A.js                                            0.55 kB │ gzip:   0.32 kB
+build/client/file-assets/e1gd24cb/settings.team-BVMkGoX9.js                                              0.56 kB │ gzip:   0.31 kB
+build/client/file-assets/e1gd24cb/use-controlled-dropdown-menu-hay5832G.js                               0.60 kB │ gzip:   0.40 kB
+build/client/file-assets/e1gd24cb/kit-status-badge-CXu7nrL7.js                                           0.61 kB │ gzip:   0.42 kB
+build/client/file-assets/e1gd24cb/custom-form-BCVbKLrh.js                                                0.61 kB │ gzip:   0.41 kB
+build/client/file-assets/e1gd24cb/kits-B1K0tMXe.js                                                       0.61 kB │ gzip:   0.37 kB
+build/client/file-assets/e1gd24cb/index-Du_s0TTy.js                                                      0.62 kB │ gzip:   0.43 kB
+build/client/file-assets/e1gd24cb/use-position-nG2XkOyo.js                                               0.62 kB │ gzip:   0.40 kB
+build/client/file-assets/e1gd24cb/locations-Celq3ZrH.js                                                  0.62 kB │ gzip:   0.38 kB
+build/client/file-assets/e1gd24cb/reminders-6qXBWxje.js                                                  0.62 kB │ gzip:   0.37 kB
+build/client/file-assets/e1gd24cb/account-details.workspace-Ak0NRBWE.js                                  0.64 kB │ gzip:   0.39 kB
+build/client/file-assets/e1gd24cb/settings.custom-fields-jJnXB4Cn.js                                     0.64 kB │ gzip:   0.39 kB
+build/client/file-assets/e1gd24cb/form-row-BaCeKeGc.js                                                   0.64 kB │ gzip:   0.38 kB
+build/client/file-assets/e1gd24cb/warning-box-CzC8kY9D.js                                                0.66 kB │ gzip:   0.44 kB
+build/client/file-assets/e1gd24cb/assets-D7v9egh9.js                                                     0.73 kB │ gzip:   0.43 kB
+build/client/file-assets/e1gd24cb/separator-Cypxx9iV.js                                                  0.73 kB │ gzip:   0.44 kB
+build/client/file-assets/e1gd24cb/me-BLjWvks5.js                                                         0.81 kB │ gzip:   0.51 kB
+build/client/file-assets/e1gd24cb/qr-code-BJTf_JmZ.js                                                    0.82 kB │ gzip:   0.42 kB
+build/client/file-assets/e1gd24cb/dialog-DRjHvpHe.js                                                     0.88 kB │ gzip:   0.49 kB
+build/client/file-assets/e1gd24cb/color-input-DP0tYeVm.js                                                0.89 kB │ gzip:   0.58 kB
+build/client/file-assets/e1gd24cb/_layout-Cq77GB1j.js                                                    0.99 kB │ gzip:   0.52 kB
+build/client/file-assets/e1gd24cb/contextual-modal-BsuHWqpL.js                                           1.01 kB │ gzip:   0.60 kB
+build/client/file-assets/e1gd24cb/_layout-B2zKjxgd.js                                                    1.08 kB │ gzip:   0.58 kB
+build/client/file-assets/e1gd24cb/status-filter-BaS7XJUF.js                                              1.10 kB │ gzip:   0.63 kB
+build/client/file-assets/e1gd24cb/_-I-aT5F9V.js                                                          1.11 kB │ gzip:   0.58 kB
+build/client/file-assets/e1gd24cb/route-bvlb6Rea.js                                                      1.13 kB │ gzip:   0.62 kB
+build/client/file-assets/e1gd24cb/settings.team-0Blr0PZs.js                                              1.14 kB │ gzip:   0.65 kB
+build/client/file-assets/e1gd24cb/kits._kitId_.edit-B4aTjeNN.js                                          1.14 kB │ gzip:   0.64 kB
+build/client/file-assets/e1gd24cb/_auth-BUd8Ho_X.js                                                      1.15 kB │ gzip:   0.58 kB
+build/client/file-assets/e1gd24cb/login-Bez-BC44.js                                                      1.16 kB │ gzip:   0.68 kB
+build/client/file-assets/e1gd24cb/locations.new-CdCEwcuc.js                                              1.18 kB │ gzip:   0.64 kB
+build/client/file-assets/e1gd24cb/account-details-DLKGxW9g.js                                            1.18 kB │ gzip:   0.67 kB
+build/client/file-assets/e1gd24cb/kits.new-BPHONYM7.js                                                   1.22 kB │ gzip:   0.66 kB
+build/client/file-assets/e1gd24cb/auth.discord-D0S8g2q8.js                                               1.28 kB │ gzip:   0.83 kB
+build/client/file-assets/e1gd24cb/reminder-team-members-DZUC7dgo.js                                      1.29 kB │ gzip:   0.73 kB
+build/client/file-assets/e1gd24cb/locations._locationId_.edit-BZVnYUhI.js                                1.29 kB │ gzip:   0.70 kB
+build/client/file-assets/e1gd24cb/account-details.workspace._workspaceId.edit-Bl4zK040.js                1.32 kB │ gzip:   0.73 kB
+build/client/file-assets/e1gd24cb/accept-invite._inviteId-4u6YGn9B.js                                    1.36 kB │ gzip:   0.73 kB
+build/client/file-assets/e1gd24cb/settings.team.nrm._nrmId.edit-BgP4ToIo.js                              1.37 kB │ gzip:   0.75 kB
+build/client/file-assets/e1gd24cb/custom-fields-Bnf9yGZv.js                                              1.39 kB │ gzip:   0.77 kB
+build/client/file-assets/e1gd24cb/settings-Ck4wsJVO.js                                                   1.40 kB │ gzip:   0.78 kB
+build/client/file-assets/e1gd24cb/logos-lB5HViC3.js                                                      1.40 kB │ gzip:   0.51 kB
+build/client/file-assets/e1gd24cb/announcements.new-DBu4anz0.js                                          1.42 kB │ gzip:   0.66 kB
+build/client/file-assets/e1gd24cb/oauth.callback-BjmcVwTQ.js                                             1.44 kB │ gzip:   0.76 kB
+build/client/file-assets/e1gd24cb/delete-asset-Bid1unaR.js                                               1.45 kB │ gzip:   0.73 kB
+build/client/file-assets/e1gd24cb/location-select-CQhd-OCj.js                                            1.48 kB │ gzip:   0.81 kB
+build/client/file-assets/e1gd24cb/settings.team.nrm.add-member-C_YfWBSv.js                               1.48 kB │ gzip:   0.80 kB
+build/client/file-assets/e1gd24cb/_qrId_.successful-link-DKj7k22W.js                                     1.54 kB │ gzip:   0.82 kB
+build/client/file-assets/e1gd24cb/assets._assetId.overview.release-custody-BZvSB9M2.js                   1.57 kB │ gzip:   0.78 kB
+build/client/file-assets/e1gd24cb/announcements-ZdSm0hT9.js                                              1.57 kB │ gzip:   0.74 kB
+build/client/file-assets/e1gd24cb/kits._kitId.release-custody-2sI8__PP.js                                1.57 kB │ gzip:   0.79 kB
+build/client/file-assets/e1gd24cb/assets.import-OGyKZntZ.js                                              1.58 kB │ gzip:   0.76 kB
+build/client/file-assets/e1gd24cb/sso-login-B_-FaeZN.js                                                  1.59 kB │ gzip:   0.86 kB
+build/client/file-assets/e1gd24cb/_qrId_.not-logged-in-DlVvs9_l.js                                       1.60 kB │ gzip:   0.76 kB
+build/client/file-assets/e1gd24cb/markdown-editor-Drcn3HYv.js                                            1.63 kB │ gzip:   0.87 kB
+build/client/file-assets/e1gd24cb/assets._assetId.overview.create-new-booking-DCnYM0vo.js                1.63 kB │ gzip:   0.77 kB
+build/client/file-assets/e1gd24cb/kits._kitId.create-new-booking-DCnYM0vo.js                             1.63 kB │ gzip:   0.77 kB
+build/client/file-assets/e1gd24cb/table-H-jX-Xrm.js                                                      1.67 kB │ gzip:   0.80 kB
+build/client/file-assets/e1gd24cb/forgot-password-Ds7CKViG.js                                            1.67 kB │ gzip:   0.89 kB
+build/client/file-assets/e1gd24cb/org._organizationId.members-C_dOtTly.js                                1.69 kB │ gzip:   0.69 kB
+build/client/file-assets/e1gd24cb/assets._assetId.reminders-BOn22JJC.js                                  1.70 kB │ gzip:   0.80 kB
+build/client/file-assets/e1gd24cb/tags.new-C0I7rrnh.js                                                   1.71 kB │ gzip:   0.87 kB
+build/client/file-assets/e1gd24cb/client-hints-BQnDfD6s.js                                               1.71 kB │ gzip:   0.96 kB
+build/client/file-assets/e1gd24cb/settings.custom-fields.new-DkwKNlfP.js                                 1.73 kB │ gzip:   0.87 kB
+build/client/file-assets/e1gd24cb/asset-status-badge-D0zkdAao.js                                         1.73 kB │ gzip:   0.90 kB
+build/client/file-assets/e1gd24cb/assets._assetId.overview.update-location-ChcxsoQJ.js                   1.77 kB │ gzip:   0.86 kB
+build/client/file-assets/e1gd24cb/scanner-DjrVFzQH.js                                                    1.77 kB │ gzip:   0.96 kB
+build/client/file-assets/e1gd24cb/input-BhEbqJJf.js                                                      1.79 kB │ gzip:   0.86 kB
+build/client/file-assets/e1gd24cb/tags._tagId_.edit-DGrmKgMz.js                                          1.80 kB │ gzip:   0.91 kB
+build/client/file-assets/e1gd24cb/users-Cm5AcUtf.js                                                      1.91 kB │ gzip:   0.92 kB
+build/client/file-assets/e1gd24cb/settings.custom-fields._fieldId_.edit-3dk4X6cS.js                      1.93 kB │ gzip:   0.98 kB
+build/client/file-assets/e1gd24cb/asset-image-B_xN9iOM.js                                                1.95 kB │ gzip:   0.99 kB
+build/client/file-assets/e1gd24cb/unsaved-changes-alert-BLHB4N0P.js                                      1.98 kB │ gzip:   0.94 kB
+build/client/file-assets/e1gd24cb/categories.new-BtTt3fHC.js                                             2.03 kB │ gzip:   0.97 kB
+build/client/file-assets/e1gd24cb/env-UTzHfAnW.js                                                        2.04 kB │ gzip:   0.88 kB
+build/client/file-assets/e1gd24cb/_qrId_.link-DTbjrGAR.js                                                2.07 kB │ gzip:   0.95 kB
+build/client/file-assets/e1gd24cb/reminders._index-EQXKnon4.js                                           2.07 kB │ gzip:   0.99 kB
+build/client/file-assets/e1gd24cb/categories._categoryId_.edit-CAZWh9up.js                               2.07 kB │ gzip:   0.99 kB
+build/client/file-assets/e1gd24cb/sort-by-Bu8YZMtq.js                                                    2.11 kB │ gzip:   1.03 kB
+build/client/file-assets/e1gd24cb/assets.new-CnFfRHrQ.js                                                 2.13 kB │ gzip:   1.04 kB
+build/client/file-assets/e1gd24cb/_qrId_.contact-owner-BobcZFfX.js                                       2.15 kB │ gzip:   1.03 kB
+build/client/file-assets/e1gd24cb/settings.team.users._userId-CwE_z37V.js                                2.15 kB │ gzip:   1.14 kB
+build/client/file-assets/e1gd24cb/assets._assetId.bookings-ChMvTjqo.js                                   2.17 kB │ gzip:   1.02 kB
+build/client/file-assets/e1gd24cb/me.bookings-CfAfqSRk.js                                                2.19 kB │ gzip:   1.03 kB
+build/client/file-assets/e1gd24cb/settings.team.users._userId.bookings-BKLAiPas.js                       2.19 kB │ gzip:   1.03 kB
+build/client/file-assets/e1gd24cb/bookings.new-DlolMOpQ.js                                               2.27 kB │ gzip:   1.12 kB
+build/client/file-assets/e1gd24cb/users-actions-dropdown-Bfp9JW1j.js                                     2.36 kB │ gzip:   0.92 kB
+build/client/file-assets/e1gd24cb/assets._assetId_.edit-C277T8oj.js                                      2.36 kB │ gzip:   1.16 kB
+build/client/file-assets/e1gd24cb/switch-BN5ADm_8.js                                                     2.55 kB │ gzip:   1.29 kB
+build/client/file-assets/e1gd24cb/index-56DNhNe0.js                                                      2.57 kB │ gzip:   1.20 kB
+build/client/file-assets/e1gd24cb/settings.general-h_2cjFay.js                                           2.62 kB │ gzip:   1.28 kB
+build/client/file-assets/e1gd24cb/index-BJAa9ugB.js                                                      2.67 kB │ gzip:   0.99 kB
+build/client/file-assets/e1gd24cb/parseISO-mtEMdkdn.js                                                   2.67 kB │ gzip:   1.18 kB
+build/client/file-assets/e1gd24cb/_qrId_.claim-CB2IyFRy.js                                               2.77 kB │ gzip:   1.27 kB
+build/client/file-assets/e1gd24cb/price-box-CbeADb26.js                                                  2.79 kB │ gzip:   1.14 kB
+build/client/file-assets/e1gd24cb/form-DAjzdFQh.js                                                       2.80 kB │ gzip:   1.26 kB
+build/client/file-assets/e1gd24cb/generic-add-to-bookings-actions-dropdown-Qhsi8_O1.js                   2.81 kB │ gzip:   1.12 kB
+build/client/file-assets/e1gd24cb/org._organizationId.qr-codes-Cyl11MN-.js                               2.90 kB │ gzip:   1.17 kB
+build/client/file-assets/e1gd24cb/index-BEz-CBnB.js                                                      2.91 kB │ gzip:   1.40 kB
+build/client/file-assets/e1gd24cb/assets._assetId.overview.assign-custody-BJiB2qSe.js                    2.97 kB │ gzip:   1.48 kB
+build/client/file-assets/e1gd24cb/assets._assetId.overview.duplicate-D8XIB_oR.js                         2.97 kB │ gzip:   1.35 kB
+build/client/file-assets/e1gd24cb/kits._kitId.add-to-existing-booking-MbUVUOEl.js                        3.00 kB │ gzip:   1.40 kB
+build/client/file-assets/e1gd24cb/assets._assetId.overview.add-to-existing-booking-DFCsrxZ0.js           3.00 kB │ gzip:   1.40 kB
+build/client/file-assets/e1gd24cb/kits._kitId.assign-custody-DFZi0WUf.js                                 3.00 kB │ gzip:   1.48 kB
+build/client/file-assets/e1gd24cb/index-Buh702b9.js                                                      3.01 kB │ gzip:   1.46 kB
+build/client/file-assets/e1gd24cb/welcome-CtTAiduX.js                                                    3.05 kB │ gzip:   1.25 kB
+build/client/file-assets/e1gd24cb/select-plan-wy3CjCOa.js                                                3.08 kB │ gzip:   1.48 kB
+build/client/file-assets/e1gd24cb/successful-subscription-modal-CU8z3zUT.js                              3.08 kB │ gzip:   1.28 kB
+build/client/file-assets/e1gd24cb/assets._index-BUY81v5q.js                                              3.19 kB │ gzip:   1.38 kB
+build/client/file-assets/e1gd24cb/onboarding-CsX1SSRF.js                                                 3.21 kB │ gzip:   1.29 kB
+build/client/file-assets/e1gd24cb/bulk-update-dialog-NLME55hs.js                                         3.28 kB │ gzip:   1.64 kB
+build/client/file-assets/e1gd24cb/reset-password-DL9iy49O.js                                             3.29 kB │ gzip:   1.41 kB
+build/client/file-assets/e1gd24cb/me.assets-D-WEmX2Z.js                                                  3.33 kB │ gzip:   1.47 kB
+build/client/file-assets/e1gd24cb/org._organizationId.assets-DMnMIcgX.js                                 3.34 kB │ gzip:   1.46 kB
+build/client/file-assets/e1gd24cb/otp-B7FNBQh1.js                                                        3.34 kB │ gzip:   1.51 kB
+build/client/file-assets/e1gd24cb/settings.team.users._userId.assets-Dt6qah68.js                         3.37 kB │ gzip:   1.49 kB
+build/client/file-assets/e1gd24cb/settings.team.nrm.import-members-CUgxSvOD.js                           3.42 kB │ gzip:   1.55 kB
+build/client/file-assets/e1gd24cb/index--d4XTpRY.js                                                      3.46 kB │ gzip:   1.53 kB
+build/client/file-assets/e1gd24cb/form-BQbyEwhI.js                                                       3.78 kB │ gzip:   1.54 kB
+build/client/file-assets/e1gd24cb/entry.client-B_H-w0je.js                                               3.90 kB │ gzip:   1.49 kB
+build/client/file-assets/e1gd24cb/account-details.workspace.new-BJRbKxC_.js                              4.03 kB │ gzip:   1.84 kB
+build/client/file-assets/e1gd24cb/index-DIyToXOb.js                                                      4.18 kB │ gzip:   2.05 kB
+build/client/file-assets/e1gd24cb/join-711w58Z_.js                                                       4.30 kB │ gzip:   1.72 kB
+build/client/file-assets/e1gd24cb/modal-BZdK1OKi.js                                                      4.38 kB │ gzip:   1.65 kB
+build/client/file-assets/e1gd24cb/availability-label-CfgD7Ys5.js                                         4.45 kB │ gzip:   1.59 kB
+build/client/file-assets/e1gd24cb/react-zorm-BZED-BqZ.js                                                 4.47 kB │ gzip:   1.95 kB
+build/client/file-assets/e1gd24cb/invite-user-dialog-dtkLwT6_.js                                         4.57 kB │ gzip:   1.90 kB
+build/client/file-assets/e1gd24cb/index-ZBf0yFdg.js                                                      4.61 kB │ gzip:   1.66 kB
+build/client/file-assets/e1gd24cb/settings.team.invites-BOCn6KO-.js                                      4.62 kB │ gzip:   2.03 kB
+build/client/file-assets/e1gd24cb/org._organizationId-Ddr9rUNr.js                                        4.84 kB │ gzip:   1.77 kB
+build/client/file-assets/e1gd24cb/empty-state-D46zHDCv.js                                                4.84 kB │ gzip:   1.67 kB
+build/client/file-assets/e1gd24cb/account-details.workspace.index-B657ZI1R.js                            5.11 kB │ gzip:   2.09 kB
+build/client/file-assets/e1gd24cb/index-K5Xec8-t.js                                                      5.18 kB │ gzip:   1.98 kB
+build/client/file-assets/e1gd24cb/dynamic-dropdown-DGuNp1KM.js                                           5.20 kB │ gzip:   1.84 kB
+build/client/file-assets/e1gd24cb/scan-details-Cm9-9Jqu.js                                               5.26 kB │ gzip:   1.81 kB
+build/client/file-assets/e1gd24cb/edit-form-DYdAdMgh.js                                                  5.29 kB │ gzip:   1.86 kB
+build/client/file-assets/e1gd24cb/bookings._bookingId.add-kits-B6Uv_vFJ.js                               5.32 kB │ gzip:   2.34 kB
+build/client/file-assets/e1gd24cb/_qrId_.link.kit-DY_hSEtU.js                                            5.42 kB │ gzip:   2.47 kB
+build/client/file-assets/e1gd24cb/index-_IWbWumL.js                                                      5.49 kB │ gzip:   1.93 kB
+build/client/file-assets/e1gd24cb/locations._locationId.add-assets-Iq3mGvcL.js                           5.56 kB │ gzip:   2.26 kB
+build/client/file-assets/e1gd24cb/set-or-edit-reminder-dialog-BoA5EAfc.js                                5.64 kB │ gzip:   2.35 kB
+build/client/file-assets/e1gd24cb/list-header-BLdC2gO2.js                                                5.90 kB │ gzip:   2.33 kB
+build/client/file-assets/e1gd24cb/locations._index-Bp3r2-aU.js                                           5.96 kB │ gzip:   2.49 kB
+build/client/file-assets/e1gd24cb/_userId-BnqoOu_l.js                                                    6.21 kB │ gzip:   2.45 kB
+build/client/file-assets/e1gd24cb/index-DbUqHTtB.js                                                      6.55 kB │ gzip:   2.80 kB
+build/client/file-assets/e1gd24cb/_qrId_.link.asset-D8xSNCNb.js                                          6.56 kB │ gzip:   2.67 kB
+build/client/file-assets/e1gd24cb/permission.validator.client-B3vCrRZa.js                                6.58 kB │ gzip:   0.67 kB
+build/client/file-assets/e1gd24cb/qrs-3sdHtwIH.js                                                        6.95 kB │ gzip:   2.25 kB
+build/client/file-assets/e1gd24cb/tags-Dyn2Bx2b.js                                                       7.00 kB │ gzip:   2.79 kB
+build/client/file-assets/e1gd24cb/component-BMeNL9cE.js                                                  7.05 kB │ gzip:   2.83 kB
+build/client/file-assets/e1gd24cb/bookings._bookingId.add-assets-RRnxRMyf.js                             7.10 kB │ gzip:   2.96 kB
+build/client/file-assets/e1gd24cb/react-FC33HSh8.js                                                      7.12 kB │ gzip:   3.10 kB
+build/client/file-assets/e1gd24cb/categories-DmbIXYzp.js                                                 7.16 kB │ gzip:   2.82 kB
+build/client/file-assets/e1gd24cb/kits._kitId.manage-assets-DgpWdpHk.js                                  7.30 kB │ gzip:   2.69 kB
+build/client/file-assets/e1gd24cb/account-details.subscription-B7VSVjPJ.js                               7.46 kB │ gzip:   2.65 kB
+build/client/file-assets/e1gd24cb/tabs-DHuKpav2.js                                                       7.76 kB │ gzip:   3.17 kB
+build/client/file-assets/e1gd24cb/form-Bd6aupCb.js                                                       7.78 kB │ gzip:   2.98 kB
+build/client/file-assets/e1gd24cb/date-fns-COJGZ52o.js                                                   7.84 kB │ gzip:   2.85 kB
+build/client/file-assets/e1gd24cb/assets._assetId.activity-Bcpmvdww.js                                   7.90 kB │ gzip:   3.16 kB
+build/client/file-assets/e1gd24cb/locations._locationId-CtbLQBmB.js                                      7.95 kB │ gzip:   3.05 kB
+build/client/file-assets/e1gd24cb/dynamic-select-Buo9SDRj.js                                             8.18 kB │ gzip:   3.26 kB
+build/client/file-assets/e1gd24cb/tooltip-CS8Ni3oj.js                                                    8.37 kB │ gzip:   3.13 kB
+build/client/file-assets/e1gd24cb/settings.custom-fields.index-KYZrewmo.js                               8.59 kB │ gzip:   3.03 kB
+build/client/file-assets/e1gd24cb/import-content-DbDDm1cF.js                                             9.24 kB │ gzip:   3.20 kB
+build/client/file-assets/e1gd24cb/Combination-BW54-HP6.js                                                9.52 kB │ gzip:   3.74 kB
+build/client/file-assets/e1gd24cb/settings.team.nrm-C-2DW5jl.js                                          9.93 kB │ gzip:   3.66 kB
+build/client/file-assets/e1gd24cb/assets._assetId.overview-lV1TDvRT.js                                  10.04 kB │ gzip:   3.30 kB
+build/client/file-assets/e1gd24cb/reminders-table-CpUhrXMb.js                                           10.75 kB │ gzip:   4.48 kB
+build/client/file-assets/e1gd24cb/settings.team.users-Cic-bwpB.js                                       11.03 kB │ gzip:   4.38 kB
+build/client/file-assets/e1gd24cb/account-details.general-DUu8VRgO.js                                   11.80 kB │ gzip:   3.92 kB
+build/client/file-assets/e1gd24cb/error-AHgJufdl.js                                                     11.93 kB │ gzip:   4.82 kB
+build/client/file-assets/e1gd24cb/kits._index-BQioIv5v.js                                               11.93 kB │ gzip:   4.17 kB
+build/client/file-assets/e1gd24cb/bookings._bookingId-BQwNkgkA.js                                       12.25 kB │ gzip:   4.32 kB
+build/client/file-assets/e1gd24cb/bookings-CCN2RYgS.js                                                  12.37 kB │ gzip:   4.16 kB
+build/client/file-assets/e1gd24cb/bookings._bookingId.scan-assets-BA8HT6fv.js                           13.07 kB │ gzip:   4.70 kB
+build/client/file-assets/e1gd24cb/qr-preview-C9Tn_8Ie.js                                                13.55 kB │ gzip:   5.40 kB
+build/client/file-assets/e1gd24cb/crisp-BjNu-qFP.js                                                     13.78 kB │ gzip:   2.85 kB
+build/client/file-assets/e1gd24cb/kits._kitId-9nV6hdMt.js                                               14.32 kB │ gzip:   4.78 kB
+build/client/file-assets/e1gd24cb/form-DyCf1al2.js                                                      14.56 kB │ gzip:   4.97 kB
+build/client/file-assets/e1gd24cb/assets._assetId-D85Ydppm.js                                           15.14 kB │ gzip:   4.78 kB
+build/client/file-assets/e1gd24cb/tags-autocomplete-DdmdXcOR.js                                         15.55 kB │ gzip:   5.34 kB
+build/client/file-assets/e1gd24cb/sidebar-Bb-On8zW.js                                                   16.89 kB │ gzip:   4.99 kB
+build/client/file-assets/e1gd24cb/format-BjJ5fJTi.js                                                    20.06 kB │ gzip:   5.71 kB
+build/client/file-assets/e1gd24cb/tw-DCnC5jgs.js                                                        20.42 kB │ gzip:   6.90 kB
+build/client/file-assets/e1gd24cb/root-DMkSsKze.js                                                      21.18 kB │ gzip:   6.36 kB
+build/client/file-assets/e1gd24cb/toast-CDjNYbpT.js                                                     21.92 kB │ gzip:   7.61 kB
+build/client/file-assets/e1gd24cb/index-Bhea5Dw2.js                                                     23.31 kB │ gzip:   8.11 kB
+build/client/file-assets/e1gd24cb/_layout-BMZjq5Tq.js                                                   25.17 kB │ gzip:   8.20 kB
+build/client/file-assets/e1gd24cb/select-CvNeI2rK.js                                                    39.17 kB │ gzip:  13.44 kB
+build/client/file-assets/e1gd24cb/dropdown-Ckq2hUNJ.js                                                  42.90 kB │ gzip:  13.29 kB
+build/client/file-assets/e1gd24cb/index-browser-dxbVYCE0.js                                             51.16 kB │ gzip:  17.38 kB
+build/client/file-assets/e1gd24cb/index-C3VLHKAr.js                                                     56.75 kB │ gzip:  13.77 kB
+build/client/file-assets/e1gd24cb/button-DaZTYPtL.js                                                    57.28 kB │ gzip:  20.16 kB
+build/client/file-assets/e1gd24cb/library-CDU9p_YL.js                                                   62.40 kB │ gzip:  17.17 kB
+build/client/file-assets/e1gd24cb/index-D680RzPw.js                                                     69.68 kB │ gzip:  23.74 kB
+build/client/file-assets/e1gd24cb/assets._index-D_5J8LjL.js                                             85.60 kB │ gzip:  22.26 kB
+build/client/file-assets/e1gd24cb/form-BHqk9jaf.js                                                      89.53 kB │ gzip:  27.43 kB
+build/client/file-assets/e1gd24cb/index-BC8FNnZP.js                                                    103.57 kB │ gzip:  28.19 kB
+build/client/file-assets/e1gd24cb/proxy-Cw50DOkG.js                                                    109.70 kB │ gzip:  36.03 kB
+build/client/file-assets/e1gd24cb/index-Dp0yeHFU.js                                                    126.21 kB │ gzip:  45.06 kB
+build/client/file-assets/e1gd24cb/components-MJWq3Rnj.js                                               187.21 kB │ gzip:  60.55 kB
+build/client/file-assets/e1gd24cb/calendar-YeQy_2o7.js                                                 238.96 kB │ gzip:  71.70 kB
+build/client/file-assets/e1gd24cb/success-animation-B3r4BqM6.js                                        339.66 kB │ gzip:  85.68 kB
+build/client/file-assets/e1gd24cb/zxing-scanner-B7SMQ9Np.js                                            402.09 kB │ gzip: 107.51 kB
+build/client/file-assets/e1gd24cb/dashboard-Z47H_I1s.js                                                758.00 kB │ gzip: 199.40 kB
+build/client/file-assets/e1gd24cb/map-placeholder-uRviSOEy.js                                          838.83 kB │ gzip: 228.47 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 26.99s
+vite v5.4.14 building SSR bundle for production...
+✓ 625 modules transformed.
+build/server/.vite/manifest.json                               4.58 kB
+build/server/file-assets/ne9amcd5/styles.css                   0.08 kB
+build/server/file-assets/ne9amcd5/custom-modal.css             0.08 kB
+build/server/file-assets/ne9amcd5/scanner.css                  0.09 kB
+build/server/file-assets/ne9amcd5/link-existing-asset.css      0.13 kB
+build/server/file-assets/ne9amcd5/fonts.css                    0.22 kB
+build/server/file-assets/ne9amcd5/assets.css                   0.26 kB
+build/server/file-assets/ne9amcd5/asset.css                    0.48 kB
+build/server/file-assets/ne9amcd5/actions-dropdown.css         0.48 kB
+build/server/file-assets/ne9amcd5/skeleton-loading.css         0.69 kB
+build/server/file-assets/ne9amcd5/nprogress2.css               0.75 kB
+build/server/file-assets/ne9amcd5/nprogress.css                0.83 kB
+build/server/file-assets/ne9amcd5/styles.new.css               0.95 kB
+build/server/file-assets/ne9amcd5/calendar.css                 4.05 kB
+build/server/file-assets/ne9amcd5/index.css                    5.45 kB
+build/server/file-assets/ne9amcd5/global.css                   6.86 kB
+build/server/file-assets/ne9amcd5/maplibre-gl.css             65.46 kB
+build/server/file-assets/ne9amcd5/tailwind.css               296.52 kB
+build/server/index.js                                      2,518.47 kB
+
+✓ 17 assets moved from Remix server build to client assets.
+build/client/file-assets/ne9amcd5/styles.css
+build/client/file-assets/ne9amcd5/styles.new.css
+build/client/file-assets/ne9amcd5/actions-dropdown.css
+build/client/file-assets/ne9amcd5/asset.css
+build/client/file-assets/ne9amcd5/assets.css
+build/client/file-assets/ne9amcd5/fonts.css
+build/client/file-assets/ne9amcd5/global.css
+build/client/file-assets/ne9amcd5/calendar.css
+build/client/file-assets/ne9amcd5/custom-modal.css
+build/client/file-assets/ne9amcd5/index.css
+build/client/file-assets/ne9amcd5/skeleton-loading.css
+build/client/file-assets/ne9amcd5/link-existing-asset.css
+build/client/file-assets/ne9amcd5/nprogress2.css
+build/client/file-assets/ne9amcd5/scanner.css
+build/client/file-assets/ne9amcd5/tailwind.css
+build/client/file-assets/ne9amcd5/maplibre-gl.css
+build/client/file-assets/ne9amcd5/nprogress.css
+
+✓ built in 6.09s
+
+  build/server/instrument.server.js  6.0kb
+
+⚡ Done in 16ms
