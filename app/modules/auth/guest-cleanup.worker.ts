@@ -11,8 +11,7 @@ const JOB_NAME = 'guest-cleanup-job';
 
 async function deleteGuestUser(guestId: string, email: string) {
   try {
-
-    // First check if user still exists
+    // First check if user still exists in the database
     const user = await db.user.findUnique({
       where: { id: guestId },
       include: {
@@ -25,42 +24,21 @@ async function deleteGuestUser(guestId: string, email: string) {
       return true;
     }
 
-    // Delete in correct order to avoid foreign key constraints
+    // Delete related entries to avoid foreign key constraints
     if (user.userOrganizations.length > 0) {
-      await db.userOrganization.deleteMany({
-        where: { userId: guestId }
-      });
+      await db.userOrganization.deleteMany({ where: { userId: guestId } });
     }
 
     if (user.teamMembers.length > 0) {
-      await db.teamMember.deleteMany({
-        where: { userId: guestId }
-      });
+      await db.teamMember.deleteMany({ where: { userId: guestId } });
     }
 
-    // Delete user from database
-    await db.user.delete({
-      where: { id: guestId }
-    });
+    // Delete user record from the database (this is the sole deletion needed)
+    await db.user.delete({ where: { id: guestId } });
 
-    // Try to delete from Supabase auth
-    try {
-      const { error: authError } = await getSupabaseAdmin().auth.admin.deleteUser(guestId);
-      if (authError) {
-        if (authError.message.includes("User not found")) {
-          console.log("[DEBUG] User not found in auth (already deleted)");
-        } else {
-          console.error("[DEBUG] Auth deletion error:", authError);
-          throw authError;
-        }
-      }
-    } catch (authError) {
-      // Don't fail the whole operation if auth deletion fails
-      Logger.error({
-        message: "Failed to delete guest from auth",
-        additionalData: { guestId, email, error: authError }
-      });
-    }
+    console.log(
+      `[DEBUG] Deleted guest user ${guestId} from the database. Supabase auth deletion skipped since the guest is not an actual auth user.`
+    );
 
     return true;
   } catch (error) {
